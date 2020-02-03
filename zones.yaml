@@ -1,0 +1,15 @@
+- name: "Jesse's Work"
+  latitude: !secret work_latitude
+  longitude: !secret work_longitude
+  radius: 60
+  icon: mdi:briefcase
+- name: "Fred's Work"
+  latitude: !secret freds_work_latitude
+  longitude: !secret freds_work_longitude
+  radius: 60
+  icon: mdi:briefcase
+- name: Home
+  latitude: !secret home_latitude 
+  longitude: !secret home_longitude
+  radius: 1000
+  icon: mdi:home

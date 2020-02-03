@@ -1,0 +1,27 @@
+# https://www.home-assistant.io/docs/ecosystem/backup/backup_github/
+.uuid
+.HA_VERSION
+.ps4-games.json
+,shopping_list.json
+google-service-account.json
+
+*.log
+*.db
+appdaemon/compiled/*
+
+html5_push_registrations.conf
+tts/
+
+themes/
+custom_components/
+www/community
+
+# Ignore folders.
+.storage
+.cloud
+.google.token
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml

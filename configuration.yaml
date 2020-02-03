@@ -1,0 +1,201 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+homeassistant:
+  name: Home
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: !secret home_elevation
+  unit_system: metric
+  time_zone: America/Montreal
+  customize: !include customize.yaml
+  # Include Packages
+  packages: !include_dir_named packages
+  whitelist_external_dirs:
+   - /tmp
+   - /share
+
+lovelace:
+  mode: yaml
+
+# Google Assistant Itegration
+google_assistant:
+  project_id: home-assistant-6e540
+  service_account: !include google-service-account.json
+  report_state: true
+
+# Camera
+camera:
+  - platform: rpi_camera
+    name: pi
+    image_width: 800
+    image_height: 600
+    image_quality: 40
+    image_rotation: 0
+    timelapse: 5000
+    horizontal_flip: 1
+    vertical_flip: 1
+
+device_tracker:
+  - platform: arpscan_tracker
+    interval_seconds: 15
+    consider_home: 60
+    track_new_devices: true
+    scan_options: " --interface=eth0 192.168.2.0/24 -g"
+    exclude:
+      - !secret hass_ip
+
+# Floof door
+cover:
+  - platform: mqtt
+    name: "Floof's Door"
+    state_topic: "homeassistant/cover/floofs_door/state"
+    state_open: "open"
+    state_closed: "closed"
+    retain: true
+
+# Floof's light
+switch:    
+  - platform: mqtt
+    name: "Floof's Light"
+    command_topic: "homeassistant/switch/floofs_light/set"
+    state_topic: "homeassistant/switch/floofs_light/state"
+
+# Use 
+weather:
+  - platform: environment_canada
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+    forecast: 'hourly'
+    name: home
+
+# Enables Person Component
+person: !include people.yaml
+
+# Enables System Health
+system_health:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time.
+history:
+
+# Add Configuration Panel
+config:
+
+updater:
+  include_used_components: true
+
+map:
+
+zone: !include zones.yaml
+
+# Track the sun
+sun:
+
+# https://fontawesome.com/icons?d=gallery&m=free
+fontawesome:
+  regular:
+  solid:
+  brands:
+
+binary_sensor:
+  - platform: workday
+    country: 'CA'
+    province: 'QC'
+
+logger:
+  default: info
+  logs:
+    homeassistant.components.nissan_leaf: debug
+    homeassistant.components.sensor.nissan_leaf: debug
+    homeassistant.components.switch.nissan_leaf: debug
+
+# Example configuration.yaml entry
+nissan_leaf:
+  username: !secret email 
+  password: !secret password
+  region: "NCI"
+  update_interval:
+    hours: 1
+  update_interval_charging:
+    minutes: 15
+  update_interval_climate:
+    minutes: 5
+
+# Custom sensors
+sensor: !include_dir_merge_list sensors/
+
+# pi hole
+pi_hole:
+  - host: 'localhost:4865'
+
+# IFTTT Key
+ifttt:
+  key: !secret ifttt_key
+
+# Garbage collection
+garbage_collection: !include garbage-collection.yaml
+
+# Online site
+http:
+  base_url: !secret external_hass_url 
+  use_x_forwarded_for: true
+  trusted_proxies: 
+    - !secret hass_ip
+    - !secret hass_external_ip
+    - 127.0.0.1
+    - ::1
+    - 192.168.0.0/24
+    - fd00::/8
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# Account for Meross Cloud
+meross_cloud:
+  username: !secret email 
+  password: !secret old_password 
+
+# Google Credentials
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+
+# Link to Roomba
+vacuum:
+  - platform: roomba
+    name: Rotom
+    host: !secret roomba_ip
+    username: !secret roomba_username 
+    password: !secret roomba_password
+
+# Enable MQTT Broker
+mqtt:
+  discovery: true
+  discovery_prefix: homeassistant
+  broker: localhost
+  birth_message:
+    topic: 'hass/status'
+    payload: 'online'
+  will_message:
+    topic: 'hass/status'
+    payload: 'offline'
+
+notify:
+  - platform: html5
+    name: web
+    vapid_pub_key: !secret vapid_pub_key
+    vapid_prv_key: !secret vapid_prv_key
+    vapid_email: !secret email
+
+# Themes
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Includes
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml

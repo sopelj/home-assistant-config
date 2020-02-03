@@ -1,0 +1,12 @@
+#
+# Common widgets
+#
+reload:
+    widget_type: reload
+    title2: Reload
+    widget_style: "background: MEDIUMSLATEBLUE;"
+
+clock:
+    widget_type: clock
+    time_format: 24hr
+    widget_style: "background: DARKSLATEBLUE;"

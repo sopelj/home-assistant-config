@@ -1,0 +1,18 @@
+update_leaf:
+  alias: Update leaf
+  sequence:
+  - data:
+      vin: !secret leaf_vin 
+    service: nissan_leaf.update
+  - data:
+      message: Started updating Charjabug
+    service: notify.mobile_app_fred_s_pixel_2
+  - data:
+      message: Started updating Charjabug
+    service: notify.mobile_app_jesse_s_pixel_3
+
+start_roomba:
+  alias: Start Roomba
+  sequence:
+  - service: vacuum.start
+  

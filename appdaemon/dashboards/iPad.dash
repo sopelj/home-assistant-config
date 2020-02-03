@@ -1,0 +1,161 @@
+title: Kitchen iPad
+widget_dimensions: [121, 122]
+widget_size: [1, 1]
+widget_margins: [5, 5]
+columns: 10
+rows: 6
+scalable: 0
+global_parameters:
+    use_comma: 0
+    precision: 0
+    use_hass_icon: 1
+
+# Gneric
+reload:
+    widget_type: reload
+    title: Reload
+
+clock:
+    widget_type: clock
+    time_format: "24hr"
+    date_format_country: "ja-JP"
+    date_format_options:
+      weekday: 'long'
+      year: 'numeric'
+      month: 'long'
+      day: 'numeric'
+
+weather_summary:
+  widget_type: weather
+  title: Today
+  show_forecast: 1
+  prefer_icons: 1
+  forecast_title: Tomorrow
+  sensors:
+    icon: sensor.dark_sky_icon
+    temperature: sensor.dark_sky_temperature
+    apparent_temperature: sensor.dark_sky_apparent_temperature
+    humidity: sensor.dark_sky_humidity
+    precip_probability: sensor.dark_sky_precip_probability
+    precip_intensity: sensor.dark_sky_precip_intensity
+    precip_type: sensor.dark_sky_precip
+    pressure: sensor.dark_sky_pressure
+    wind_speed: sensor.dark_sky_wind_speed
+    wind_bearing: sensor.dark_sky_wind_bearing
+    forecast_icon: sensor.dark_sky_icon_1d
+    forecast_temperature_min: sensor.dark_sky_daily_low_temperature_1d
+    forecast_temperature_max: sensor.dark_sky_daily_high_temperature_1d
+    forecast_precip_probability: sensor.dark_sky_precip_probability_1d
+    forecast_precip_type: sensor.dark_sky_precip
+
+
+under_counter_lights:
+  title: "Under the counter lights"
+  widget_type: switch
+  entity: switch.under_counter_lights_2
+  icon_on: mdi-toaster-oven
+  icon_off: mdi-toaster-oven
+
+plant_light:
+  title: "Bob's Light"
+  widget_type: switch
+  entity: switch.plant_light_2
+  icon_on: mdi-fruit-pineapple
+  icon_off: mdi-fruit-pineapple
+
+# Car Stuff
+leaf_battery:
+  title: "Leaf Battery"
+  widget_type: gauge
+  entity: sensor.chargabug_charge
+  units: "%"
+  min: 0
+  max: 100
+  low_color: "#ee3030"
+  med_color: "#eead30"
+  high_color: "#77df0f"
+
+leaf_plugged:
+  title: "Leaf Plugged"
+  widget_type: binary_sensor
+  entity: binary_sensor.chargabug_plug_status
+  
+leaf_update:
+  widget_type: script
+  title: "Update"
+  entity: script.update_leaf
+  icon_on: fa-sync
+  icon_off: fa-sync
+
+
+# People
+jesse_presence_mapped:
+  title: Jesse
+  widget_type: device_tracker
+  device: pixel_3
+
+
+fred_presence_mapped:
+  title: Fred
+  widget_type: device_tracker
+  device: pixel_2
+
+
+# Floof's Stuff
+floof_precense_mapped:
+  title: Floof
+  widget_type: person
+  device: person.floof
+  icon_on: fa-dog
+  icon_off: fa-dog
+
+floofs_door:
+  title: "Floof's Door"
+  widget_type: cover
+  entity: cover.floof_s_door  
+  icon_on: fa-door-open
+  icon_off: fa-door-closed
+
+floofs_light:
+  title: "Floof's Light"
+  widget_type: switch
+  entity: switch.floof_s_light
+  icon_on: fa-lightbulb
+  icon_off: fa-lightbulb
+
+tv_time_scene:
+  title: "TV Time"
+  widget_type: scene
+  entity: scene.tv_time
+  icon_on: fa-tv
+  icon_off: fa-tv
+
+bedtime_scene:
+  title: "Bedtime"
+  widget_type: scene
+  entity: scene.bedtime
+  icon_on: fa-bed
+  icon_off: fa-bed
+
+start_vacuum_button:
+  widget_type: script
+  title: "Start Rotom"
+  entity: script.start_roomba
+  icon_on: mdi-robot-vacuum
+  icon_off: mdi-robot-vacuum
+  
+#
+# Layout
+#
+layout:
+    - clock(2x1), weather_summary(2x2), reload
+    - jesse_presence_mapped, fred_presence_mapped
+    - leaf_battery, leaf_plugged, leaf_update
+    - floof_precense_mapped, floofs_door, floofs_light
+    - tv_time_scene, bedtime_scene, under_counter_lights, plant_light, start_vacuum_button
+    # - nav_main,         label(6x1), reload, temperature, weather_icon_now, clock
+    # - nav_switchboard,  camera_noaa(3x3), camera_environment_canada(3x3), wind, daily_forecast(2x1)
+    #- nav_weather,      wind_icon, weekly_forecast(2x1)
+    #- nav_spacer(1x2),  spacer, temperature_today, weather_icon_today
+    #-                   aqi, uv, sensor.doomsday_clock, spacer(4x1), temperature_tomorrow, weather_icon_tomorrow
+    #- nav_status,       aqi_particles, aqi_ozone, aqi_carbon_monoxide, aqi_nitrogen_dioxide, aqi_sulphur_dioxide, spacer(2x1), temperature_after_tomorrow, weather_icon_after_tomorrow

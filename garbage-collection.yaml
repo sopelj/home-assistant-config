@@ -1,0 +1,11 @@
+# https://github.com/bruxy70/Garbage-Collection/
+sensors:
+  - name: garbage
+    frequency: "weekly"
+    collection_days: "thu"
+  - name: recycling
+    icon_normal: "mdi:recycle"
+    icon_today: "mdi:restore-alert"
+    icon_tomorrow: "mdi:history"
+    frequency: "odd-weeks"
+    collection_days: "thu"

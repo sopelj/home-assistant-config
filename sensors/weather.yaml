@@ -1,0 +1,27 @@
+# https://github.com/renemarc/home-assistant-config/blob/master/sensors/weather.yaml
+
+- platform: darksky
+  api_key: !secret darksky_api_key
+  forecast:
+    - 0
+    - 1
+  monitored_conditions:
+    - summary
+    - daily_summary
+    - icon
+    - uv_index
+    - ozone
+    - temperature
+    - temperature_high
+    - temperature_low
+    - temperature_min
+    - temperature_max
+    - apparent_temperature
+    - apparent_temperature_high
+    - humidity
+    - wind_speed
+    - wind_bearing
+    - precip_probability
+    - precip_intensity
+    - precip_type
+    - pressure

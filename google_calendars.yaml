@@ -1,0 +1,38 @@
+- cal_id: !secret email
+  entities:
+  - device_id: jesse_calendar
+    name: Jesse
+    track: true
+
+- cal_id: "tj8pojrpg6kagjr76s0mbcv644@group.calendar.google.com"
+  entities:
+    - device_id: fred_calendar
+      name: Work
+      track: true
+
+- cal_id: "5c8dicnpk0lardgavt26glcf7o@group.calendar.google.com"
+  entities:
+    - device_id: work_calendar
+      name: Work
+      track: true
+
+- cal_id: family08419169873775080020@group.calendar.google.com
+  entities:
+  - device_id: family
+    ignore_availability: true
+    name: Family
+    track: true
+
+- cal_id: addressbook#contacts@group.v.calendar.google.com
+  entities:
+  - device_id: contacts
+    ignore_availability: true
+    name: Contacts
+    track: true
+
+- cal_id: en.canadian#holiday@group.v.calendar.google.com
+  entities:
+  - device_id: holidays_in_canada
+    ignore_availability: true
+    name: Holidays in Canada
+    track: true

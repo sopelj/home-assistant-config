@@ -1,0 +1,14 @@
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+
+- platform: seventeentrack
+  username: !secret email
+  password: !secret old_password
+
+- platform: uptime
+- platform: season
+- platform: version
+  source: hassio
+  image: raspberrypi2
