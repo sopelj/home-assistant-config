@@ -1,8 +1,17 @@
+#  ____                           
+# / ___|  ___ ___ _ __   ___  ___ 
+# \___ \ / __/ _ \ '_ \ / _ \/ __|
+#  ___) | (_|  __/ | | |  __/\__ \
+# |____/ \___\___|_| |_|\___||___/
+
+# Turnoff the Plant light and start the TV
 - name: "TV Time"
   entities:
     switch.plant_light_2: off
     media_player.playstation_4:
       state: on
+
+# Turn off all the lights and the PS4
 - name: "Bedtime"
   entities:
     switch.plant_light_2: off
@@ -11,4 +20,3 @@
     light.bedroom_light: off
     media_player.playstation_4:
       state: off
-      source: "Netflix"

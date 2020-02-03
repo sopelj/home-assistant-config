@@ -1,0 +1,11 @@
+#  ____          _ _       _               
+# / ___|_      _(_) |_ ___| |__   ___  ___ 
+# \___ \ \ /\ / / | __/ __| '_ \ / _ \/ __|
+#  ___) \ V  V /| | || (__| | | |  __/\__ \
+# |____/ \_/\_/ |_|\__\___|_| |_|\___||___/
+
+# Floof's Bedroom Light
+- platform: mqtt
+  name: "Floof's Light"
+  command_topic: "homeassistant/switch/floofs_light/set"
+  state_topic: "homeassistant/switch/floofs_light/state"

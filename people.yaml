@@ -1,10 +1,19 @@
+#  ____                  _      
+# |  _ \ ___  ___  _ __ | | ___ 
+# | |_) / _ \/ _ \| '_ \| |/ _ \
+# |  __/  __/ (_) | |_) | |  __/
+# |_|   \___|\___/| .__/|_|\___|
+#                 |_| 
+
 - name: Jesse
   id: jesse
   device_trackers:
     - device_tracker.pixel_3
+
 - name: Frédéric
   id: fred
   device_trackers:
     - device_tracker.pixel_2
+
 - name: Floof
   id: floof

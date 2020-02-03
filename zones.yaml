@@ -1,13 +1,21 @@
+# _____                     
+# |__  /___  _ __   ___  ___ 
+#   / // _ \| '_ \ / _ \/ __|
+#  / /| (_) | | | |  __/\__ \
+# /____\___/|_| |_|\___||___/
+
 - name: "Jesse's Work"
   latitude: !secret work_latitude
   longitude: !secret work_longitude
   radius: 60
   icon: mdi:briefcase
+
 - name: "Fred's Work"
   latitude: !secret freds_work_latitude
   longitude: !secret freds_work_longitude
   radius: 60
   icon: mdi:briefcase
+
 - name: Home
   latitude: !secret home_latitude 
   longitude: !secret home_longitude

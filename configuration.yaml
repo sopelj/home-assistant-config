@@ -1,5 +1,11 @@
+#  _   _                  ____             __ _       
+# | | | | __ _ ___ ___   / ___|___  _ __  / _(_) __ _ 
+# | |_| |/ _` / __/ __| | |   / _ \| '_ \| |_| |/ _` |
+# |  _  | (_| \__ \__ \ | |__| (_) | | | |  _| | (_| |
+# |_| |_|\__,_|___/___/  \____\___/|_| |_|_| |_|\__, |
+#                                                |___/ 
 
-# Configure a default setup of Home Assistant (frontend, api, etc)
+# General config
 homeassistant:
   name: Home
   latitude: !secret home_latitude
@@ -14,104 +20,60 @@ homeassistant:
    - /tmp
    - /share
 
+# Online site
+http:
+  base_url: !secret external_hass_url 
+  use_x_forwarded_for: true
+  trusted_proxies: 
+    - !secret hass_ip
+    - !secret hass_external_ip
+    - 127.0.0.1
+    - ::1
+    - 192.168.0.0/24
+    - fd00::/8
+   
+# Force yaml mode for Lovelace
 lovelace:
   mode: yaml
 
-# Google Assistant Itegration
+# Google Assistant Integration
 google_assistant:
   project_id: home-assistant-6e540
   service_account: !include google-service-account.json
   report_state: true
 
-# Camera
-camera:
-  - platform: rpi_camera
-    name: pi
-    image_width: 800
-    image_height: 600
-    image_quality: 40
-    image_rotation: 0
-    timelapse: 5000
-    horizontal_flip: 1
-    vertical_flip: 1
-
-device_tracker:
-  - platform: arpscan_tracker
-    interval_seconds: 15
-    consider_home: 60
-    track_new_devices: true
-    scan_options: " --interface=eth0 192.168.2.0/24 -g"
-    exclude:
-      - !secret hass_ip
-
-# Floof door
-cover:
-  - platform: mqtt
-    name: "Floof's Door"
-    state_topic: "homeassistant/cover/floofs_door/state"
-    state_open: "open"
-    state_closed: "closed"
-    retain: true
-
-# Floof's light
-switch:    
-  - platform: mqtt
-    name: "Floof's Light"
-    command_topic: "homeassistant/switch/floofs_light/set"
-    state_topic: "homeassistant/switch/floofs_light/state"
-
-# Use 
+# Add environment canada
 weather:
   - platform: environment_canada
     latitude: !secret home_latitude
     longitude: !secret home_longitude
     forecast: 'hourly'
-    name: home
-
-# Enables Person Component
-person: !include people.yaml
+    name: environment_canada_home
 
 # Enables System Health
 system_health:
-
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
-
 # Enables support for tracking state changes over time.
 history:
-
 # Add Configuration Panel
 config:
+# Enable link to map
+map:
+# Enable sun tracking
+sun:
 
 updater:
   include_used_components: true
 
-map:
-
-zone: !include zones.yaml
-
-# Track the sun
-sun:
-
 # https://fontawesome.com/icons?d=gallery&m=free
+# Enable fontawesome icons
 fontawesome:
   regular:
   solid:
   brands:
 
-binary_sensor:
-  - platform: workday
-    country: 'CA'
-    province: 'QC'
-
-logger:
-  default: info
-  logs:
-    homeassistant.components.nissan_leaf: debug
-    homeassistant.components.sensor.nissan_leaf: debug
-    homeassistant.components.switch.nissan_leaf: debug
-
-# Example configuration.yaml entry
+# Car configuration
 nissan_leaf:
   username: !secret email 
   password: !secret password
@@ -133,21 +95,6 @@ pi_hole:
 # IFTTT Key
 ifttt:
   key: !secret ifttt_key
-
-# Garbage collection
-garbage_collection: !include garbage-collection.yaml
-
-# Online site
-http:
-  base_url: !secret external_hass_url 
-  use_x_forwarded_for: true
-  trusted_proxies: 
-    - !secret hass_ip
-    - !secret hass_external_ip
-    - 127.0.0.1
-    - ::1
-    - 192.168.0.0/24
-    - fd00::/8
 
 # Text to speech
 tts:
@@ -171,18 +118,7 @@ vacuum:
     username: !secret roomba_username 
     password: !secret roomba_password
 
-# Enable MQTT Broker
-mqtt:
-  discovery: true
-  discovery_prefix: homeassistant
-  broker: localhost
-  birth_message:
-    topic: 'hass/status'
-    payload: 'online'
-  will_message:
-    topic: 'hass/status'
-    payload: 'offline'
-
+# Web notifications
 notify:
   - platform: html5
     name: web
@@ -195,7 +131,15 @@ frontend:
   themes: !include_dir_merge_named themes
 
 # Includes
-group: !include groups.yaml
 automation: !include automations.yaml
-script: !include scripts.yaml
+binary_sensor: !include binary-sensors.yaml
+cover: !include covers.yaml
+device_tracker: !include device-trackers.yaml
+garbage_collection: !include garbage-collection.yaml
+group: !include groups.yaml
+logger: !include logger.yaml
+person: !include people.yaml
 scene: !include scenes.yaml
+script: !include scripts.yaml
+switch: !include switches.yaml
+zone: !include zones.yaml

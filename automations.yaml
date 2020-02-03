@@ -1,3 +1,9 @@
+#     _         _                        _   _                 
+#    / \  _   _| |_ ___  _ __ ___   __ _| |_(_) ___  _ __  ___ 
+#   / _ \| | | | __/ _ \| '_ ` _ \ / _` | __| |/ _ \| '_ \/ __|
+#  / ___ \ |_| | || (_) | | | | | | (_| | |_| | (_) | | | \__ \
+# /_/   \_\__,_|\__\___/|_| |_| |_|\__,_|\__|_|\___/|_| |_|___/
+
 # Refresh Google Assistant
 - alias: "Refresh Google Assistant"
   hide_entity: true
@@ -17,16 +23,18 @@
     data_template:
       homeassistant.components: "{{ trigger.to_state.state }}"
 
+# Notify me about updates
 - alias: "Home Assistant Update"
   initial_state: True
   trigger:
     - platform: state
       entity_id: updater.updater
   action:
-    service: notify.jesse
+    service: notify.mobile_app_jesse_s_pixel_3
     data:
       message: "New version {{ states.updater.updater.state }} of Home Assistant is available."
 
+# Change Hass theme based on time of day
 - alias: 'Set light theme for the day'
   trigger:
     - platform: time
@@ -34,8 +42,8 @@
   action:
     service: frontend.set_theme
     data:
-      name: default
-          
+      name: ios-light-mode
+
 - alias: 'Set dark theme for the night'
   trigger:
     - platform: time
@@ -43,4 +51,4 @@
   action:
     service: frontend.set_theme
     data:
-      name: material_dark_pink
+      name: ios-dark-mode

@@ -1,3 +1,11 @@
+#  ____            _       _       
+# / ___|  ___ _ __(_)_ __ | |_ ___ 
+# \___ \ / __| '__| | '_ \| __/ __|
+#  ___) | (__| |  | | |_) | |_\__ \
+# |____/ \___|_|  |_| .__/ \__|___/
+#                 |_|           
+
+# Update Leaf status and notify
 update_leaf:
   alias: Update leaf
   sequence:
@@ -11,6 +19,7 @@ update_leaf:
       message: Started updating Charjabug
     service: notify.mobile_app_jesse_s_pixel_3
 
+# Service to start Roomba
 start_roomba:
   alias: Start Roomba
   sequence:

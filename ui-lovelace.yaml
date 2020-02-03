@@ -1,3 +1,9 @@
+#  _                   _                
+# | |    _____   _____| | __ _  ___ ___ 
+# | |   / _ \ \ / / _ \ |/ _` |/ __/ _ \
+# | |__| (_) \ V /  __/ | (_| | (_|  __/
+# |_____\___/ \_/ \___|_|\__,_|\___\___|
+
 title: Maison Mauve
 background: var(--background-image)
 resources:
@@ -219,7 +225,7 @@ views:
                 service: ps4.send_command
                 service_data:
                   entity_id: media_player.playstation_4
-                  command: "options"
+                  command: "option"
             - type: entity-button
               entity: media_player.playstation_4
               icon: far:long-arrow-alt-right
