@@ -1,0 +1,246 @@
+###################################
+# iRobot Vacuum Package
+# From: https://github.com/jeremywillans/ha-rest980-roomba/blob/master/vacuum.yaml
+###################################
+
+###################################
+# Sensor
+###################################
+
+sensor:
+  # Roomba via Rest980 Docker Image
+  - platform: rest
+    name: rest980
+    json_attributes:
+      - batPct
+      - bin
+      - cleanMissionStatus
+      - dock
+      - pose
+    resource: http://localhost:3000/api/local/info/state
+    value_template: 'OK'
+    scan_interval: 10
+  - platform: template
+    sensors:
+      vacuum_battery:
+        friendly_name_template: >-
+          {{ states('input_text.vacuum_name') }} Battery
+        value_template: >-
+          {{ state_attr('sensor.rest980', 'batPct') }}
+        unit_of_measurement: '%'
+        device_class: battery
+      vacuum_cycle:
+        friendly_name_template: >-
+          {{ states('input_text.vacuum_name') }} Cycle
+        value_template: >-
+          {% set mapper =  {
+            'clean' : 'Cleaning',
+            'evac' : 'Emptying Robot',
+            'dock' : 'Returning Home',
+            'none' : 'Ready' } %}
+          {% set state =  state_attr('sensor.rest980', 'cleanMissionStatus')["cycle"] %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+        icon_template: mdi:broom
+      vacuum_phase:
+        friendly_name_template: >-
+          {{ states('input_text.vacuum_name') }} Status
+        value_template: >-
+          {% if state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] == 'charge' and state_attr('sensor.rest980', 'batPct') == 100 %}
+            Fully Charged
+          {% else %}
+            {% set mapper =  {
+            'charge' : 'Charging',
+            'run' : 'Cleaning',
+            'evac' : 'Emptying Robot',
+            'stop' : 'Stopped/Paused',
+            'stuck' : 'Stuck',
+            'hmUsrDock' : 'Sent Home',
+            'hmMidMsn' : 'Returning Home mid Clean',
+            'hmPostMsn' : 'Returning Home' } %}
+            {% set state =  state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] %}
+            {{ mapper[state] if state in mapper else 'Unknown' }}
+          {% endif %}
+          
+        icon_template: mdi:settings
+      vacuum_bin:
+        friendly_name_template: >-
+          {{ states('input_text.vacuum_name') }} Bin Status
+        value_template: >-
+          {% set mapper =  {
+            true : 'Full',
+            false : 'Not Full' } %}
+          {% set state =  state_attr('sensor.rest980', 'bin')["full"] %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+        icon_template: mdi:delete
+      vacuum_dock:
+        friendly_name_template: >-
+          {{ states('input_text.vacuum_name') }} Clean Base Status
+        value_template: >-
+          {% set mapper =  {
+            300 : 'Ready',
+            301 : 'Ready',
+            302 : 'Emptying Robot',
+            350 : 'Bag Missing',
+            351 : 'Base Clogged',
+            353 : 'Bag Full' } %}
+          {% set state =  state_attr('sensor.rest980', 'dock')["state"] %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+        icon_template: mdi:home-minus
+      vacuum_location:
+        friendly_name_template: >-
+          {{ states('input_text.vacuum_name') }} Location
+        value_template: >-
+          {% if state_attr('sensor.rest980', 'pose')['theta'] is defined %}
+            ({{ state_attr('sensor.rest980', 'pose')['point']['x'] }}, {{ state_attr('sensor.rest980', 'pose')['point']['y'] }}, {{ state_attr('sensor.rest980', 'pose')['theta'] }})
+          {% else %}
+            Unavailable
+          {% endif %}
+        icon_template: mdi:home-map-marker
+
+###################################
+# Rest Command
+###################################
+
+rest_command:
+  vacuum_action:
+    url: >-
+      {{ states('input_text.vacuum_action') }}{{ command }}
+    verify_ssl: false
+    method: 'get'
+    timeout: 20
+  vacuum_clean:
+    url: >-
+      {{ states('input_text.vacuum_action') }}cleanRoom
+    verify_ssl: false
+    method: POST
+    content_type: 'application/json'
+    payload: '{{ payload }}'
+
+###################################
+# Automation
+###################################
+
+automation:
+  # Update Vacuum REST Sensor for Location Details
+  - alias: Vacuum Update Location
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        seconds: /2
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: rest_command
+          service: vacuum_clean
+    condition: 
+      condition: state
+      entity_id: sensor.vacuum_cycle
+      state: 'Cleaning'
+    action:
+      - service: homeassistant.update_entity
+        entity_id: sensor.rest980
+  
+  # Log Vacuum Location to File
+  - alias: Vacuum Log Position
+    initial_state: true
+    trigger:
+        platform: state
+        entity_id: sensor.vacuum_location
+    condition:
+      condition: state
+      entity_id: sensor.vacuum_cycle
+      state: 'Cleaning'
+    action:
+      - service: notify.vacuumfile
+        data_template: 
+          message: "{{ states('sensor.vacuum_location') }}"
+               
+  # Initialize Blank Vacuum Log File
+  - alias: Vacuum Clean Log
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: sensor.vacuum_cycle
+      from: 'Ready'
+      to: 'Cleaning'
+    action:
+      - service: shell_command.vacuum_clear_log
+      - service: shell_command.vacuum_clear_image
+          
+  # Update Vacuum Log File with Finished Status
+  - alias: Vacuum Notify on Finished Cleaning
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: sensor.vacuum_cycle
+      from: 'Cleaning'
+      to: 'Ready'
+    action:
+      - service: notify.vacuumfile
+        data_template: 
+          message: "Finished"
+
+  # Update Vacuum Log File with Stuck Status
+  - alias: Vacuum Notify on Stuck Status
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: sensor.vacuum_phase
+      to: 'Stuck'
+    action:
+      - service: notify.vacuumfile
+        data_template: 
+          message: "Stuck"
+
+  # Generate Complete Vacuum Map
+  - alias: Vacuum Generate Image after Cleaning
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: sensor.vacuum_cycle
+      from: 'Cleaning'
+      to: 'Ready'
+      for:
+        seconds: 10
+    action:
+      service: shell_command.vacuum_generate_image
+
+###################################
+# Notify
+###################################
+
+notify:
+  - name: VacuumFile
+    platform: file
+    filename: /config/vacuum/vacuum.log
+
+###################################
+# Camera
+###################################
+
+camera:
+  - platform: generic
+    still_image_url: 'http://localhost:3000/image.php'
+    content_type: image/png
+    name: Roomba
+
+
+###################################
+# Scripts
+###################################
+
+script:
+  generate_image_script:
+    sequence:
+      - service: shell_command.vacuum_generate_image
+        data_template:
+          ha_token: !secret appdaemon_token
+    
+###################################
+# Shell Command
+###################################
+
+shell_command:
+  vacuum_clear_log: cp /dev/null {{ states('input_text.vacuum_log') }}
+  vacuum_clear_image: curl -X GET -s -O /dev/null '{{ states("input_text.vacuum_map") }}?clear=true'
+  vacuum_generate_image: curl -X GET -s -O /dev/null '{{ states("input_text.vacuum_map") }}?last=true'

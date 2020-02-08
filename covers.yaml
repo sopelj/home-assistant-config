@@ -4,10 +4,3 @@
 # | |__| (_) \ V /  __/ |  \__ \
 #  \____\___/ \_/ \___|_|  |___/
 
-# Floof's Door sensor
-- platform: mqtt
-  name: "Floof's Door"
-  state_topic: "homeassistant/cover/floofs_door/state"
-  state_open: "open"
-  state_closed: "closed"
-  retain: true

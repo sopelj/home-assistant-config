@@ -1,0 +1,21 @@
+#  _____ _              __   ____  _          __  __ 
+# |  ___| | ___   ___  / _| / ___|| |_ _   _ / _|/ _|
+# | |_  | |/ _ \ / _ \| |_  \___ \| __| | | | |_| |_ 
+# |  _| | | (_) | (_) |  _|  ___) | |_| |_| |  _|  _|
+# |_|   |_|\___/ \___/|_|   |____/ \__|\__,_|_| |_|  
+
+cover:
+  # Floof's Door sensor
+  - platform: mqtt
+    name: "Floof's Door"
+    state_topic: "homeassistant/cover/floofs_door/state"
+    state_open: "open"
+    state_closed: "closed"
+    retain: true
+
+light:
+  # Floof's Bedroom Light
+  - platform: mqtt
+    name: "Floof's Light"
+    command_topic: "homeassistant/switch/floofs_light/set"
+    state_topic: "homeassistant/switch/floofs_light/state"
