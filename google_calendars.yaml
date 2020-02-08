@@ -36,3 +36,10 @@
     ignore_availability: true
     name: Holidays in Canada
     track: true
+
+- cal_id: pr06rck8qfqmr9cbcqtgams61o@group.calendar.google.com
+  entities:
+  - device_id: hemisphere
+    ignore_availability: true
+    name: Hemisphere
+    track: true

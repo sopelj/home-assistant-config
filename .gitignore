@@ -4,6 +4,7 @@
 .ps4-games.json
 ,shopping_list.json
 google-service-account.json
+.Jesse's Google Fit_google_fit.token
 
 *.log
 *.db

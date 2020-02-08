@@ -12,6 +12,9 @@ resources:
   # https://github.com/thomasloven/lovelace-fold-entity-row
   - url: /community_plugin/lovelace-fold-entity-row/fold-entity-row.js
     type: module
+  # https://github.com/benct/lovelace-multiple-entity-row
+  - url: /community_plugin/lovelace-multiple-entity-row/multiple-entity-row.js
+    type: module
   # https://github.com/custom-cards/bar-card
   - url: /community_plugin/bar-card/bar-card.js
     type: js
@@ -47,6 +50,12 @@ resources:
     type: module
   - url: /community_plugin/weather-card/weather-card.js
     type: module
+  # https://github.com/gadgetchnnel/lovelace-home-feed-card
+  - url: /community_plugin/lovelace-home-feed-card/lovelace-home-feed-card.js
+    type: js
+  # https://github.com/RodBr/miflora-card/blob/master/README.md
+  - url: /community_plugin/miflora-card/miflora-card.js
+    type: js
   # https://github.com/Villhellm/lovelace-animated-background
   # - url: /community_plugin/lovelace-animated-background/animated-background.js
   #   type: module
@@ -91,7 +100,7 @@ views:
         cards:
           # Weather Card
           - type: custom:weather-card
-            entity: weather.home_2
+            entity: weather.environment_canada_home
           # Garbage
           - type: custom:garbage-collection-card
             entity: sensor.garbage
@@ -139,7 +148,7 @@ views:
           - type: entities
             entities:
               - person.jesse
-              - person.fred
+              - person.frederic
           - type: entities
             entities:
               - person.floof
@@ -162,6 +171,10 @@ views:
               .grid-content div:nth-child(3) {
                 display: none;
               }
+          - type: picture-glance
+            aspect_ratio: 0%
+            camera_image: camera.roomba
+            entities: []
               
   - title: Info
     id: info
@@ -185,6 +198,15 @@ views:
             - entity_id: 'sensor.*track_package_*'
               options:
                 secondary_info: last-changed
+      - type: entities
+        title: Jesse
+        show_header_toggle: false
+        entities:
+          - sensor.jesse_s_google_fit_steps
+          - sensor.jesse_s_google_fit_weight
+          - sensor.jesse_s_google_fit_distance
+          - sensor.jesse_s_google_fit_move_time
+          - sensor.jesse_s_google_fit_calories
 
   - title: Living Room
     id: living-room
@@ -198,7 +220,7 @@ views:
           cards:
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:playstation
+              icon: fab:playstation
               show_name: false
               tap_action:
                 action: call-service
@@ -208,7 +230,7 @@ views:
                   command: "ps"
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:arrow-up
+              icon: fas:arrow-up
               show_name: false
               tap_action:
                 action: call-service
@@ -218,7 +240,7 @@ views:
                   command: "up"
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:long-arrow-alt-right
+              icon: fas:long-arrow-alt-right
               show_name: false
               tap_action:
                 action: call-service
@@ -228,7 +250,7 @@ views:
                   command: "option"
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:long-arrow-alt-right
+              icon: fas:long-arrow-alt-right
               show_name: false
               tap_action:
                 action: call-service
@@ -240,7 +262,7 @@ views:
           cards:
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:arrow-left
+              icon: fas:arrow-left
               show_name: false
               tap_action:
                 action: call-service
@@ -250,7 +272,7 @@ views:
                   command: "left"
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:arrow-down
+              icon: fas:arrow-down
               show_name: false
               tap_action:
                 action: call-service
@@ -260,7 +282,7 @@ views:
                   command: "down"
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:arrow-right
+              icon: fas:arrow-right
               show_name: false
               tap_action:
                 action: call-service
@@ -270,7 +292,7 @@ views:
                   command: "right"
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:long-arrow-alt-left
+              icon: fas:long-arrow-alt-left
               show_name: false
               tap_action:
                 action: call-service
@@ -283,7 +305,6 @@ views:
             - type: entity-button
               entity: media_player.playstation_4
               icon: mdi:netflix
-              #show_name: false
               name: "Netflix"
               tap_action:
                 action: call-service
@@ -305,7 +326,7 @@ views:
                   
             - type: entity-button
               entity: media_player.playstation_4
-              icon: far:fort-awesome
+              icon: fab:fort-awesome
               name: "Disney+"
               tap_action:
                 action: call-service
@@ -315,15 +336,34 @@ views:
                   source: "Disney+"
                   
         - type: entity-button
-          entity: switch.plant_light_2
+          entity: switch.plant_light
           icon: mdi:fruit-pineapple
           icon_height: 50px
+        - type: custom:miflora-card
+          title: Bob
+          image: images/pineapple.jpg
+          min_moisture: 15
+          max_moisture: 60
+          min_conductivity: 350
+          min_temperature: 12
+          entities:
+            - moisture:sensor.pineapple_sensor_moisture
+            - intensity:sensor.pineapple_sensor_light_intensity
+            - temperature:sensor.pineapple_sensor_temperature
+            - conductivity:sensor.pineapple_sensor_conductivity
+            - battery:sensor.pineapple_sensor_battery
       - type: vertical-stack
         cards:
         - type: media-control
           entity: media_player.living_room_speaker
         - type: media-control
           entity: media_player.livingroom_chromecast
+      - type: vertical-stack
+        cards:
+          - type: picture-glance
+            title: Living room
+            entities: []
+            camera_image: camera.livingroom_camera
 
   - title: Lights
     icon: mdi:lightbulb-on-outline
@@ -331,15 +371,15 @@ views:
       - type: entities
         title: Kitchen
         entities:
-          - switch.under_counter_lights_2
+          - switch.under_counter_lights
       - type: entities
         title: Living Room
         entities:
-          - switch.plant_light_2
+          - switch.plant_light
       - type: entities
         title: Hallway
         entities:
-          - switch.hallway_light_2
+          - switch.hallway_light
       - type: entities
         title: Bedroom
         entities:
@@ -348,6 +388,11 @@ views:
         title: Guest Bedroom
         entities:
           - switch.wemo_light_switch
+      - type: entities
+        title: Outdoor
+        entities:
+          - switch.switch_1
+          - switch.switch_2
 
 
   - title: Settings

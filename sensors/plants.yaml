@@ -1,0 +1,9 @@
+- platform: miflora
+  name: "Pineapple Sensor"
+  mac: '80:EA:CA:89:05:A8'
+  monitored_conditions:
+    - moisture
+    - light
+    - temperature
+    - conductivity
+    - battery

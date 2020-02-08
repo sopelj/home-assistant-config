@@ -7,7 +7,7 @@
 # Set Photos
 person.jesse:
   entity_picture: /local/images/jesse-192x192.png
-person.fred:
+person.frederic:
   entity_picture: /local/images/fred-192x192.png
 person.floof:
   entity_picture: /local/images/floof-192x192.png
