@@ -1,0 +1,92 @@
+ 
+# https://github.com/jeremywillans/ha-rest980-roomba/blob/master/vacuum.yaml
+
+ # Roomba via Rest980 Docker Image
+- platform: rest
+  name: rest980
+  json_attributes:
+    - batPct
+    - bin
+    - cleanMissionStatus
+    - dock
+    - pose
+  resource: !secret vacuum_state
+  value_template: 'OK'
+  scan_interval: 10
+
+- platform: template
+  sensors:
+    vacuum_battery:
+      friendly_name_template: >-
+        {{ states('input_text.vacuum_name') }} Battery
+      value_template: >-
+        {{ state_attr('sensor.rest980', 'batPct') }}
+      unit_of_measurement: '%'
+      device_class: battery
+    vacuum_cycle:
+      friendly_name_template: >-
+        {{ states('input_text.vacuum_name') }} Cycle
+      value_template: >-
+        {% set mapper =  {
+          'clean' : 'Cleaning',
+          'evac' : 'Emptying Robot',
+          'dock' : 'Returning Home',
+          'none' : 'Ready' } %}
+        {% set state =  state_attr('sensor.rest980', 'cleanMissionStatus')["cycle"] %}
+        {{ mapper[state] if state in mapper else 'Unknown' }}
+      icon_template: mdi:broom
+    vacuum_phase:
+      friendly_name_template: >-
+        {{ states('input_text.vacuum_name') }} Status
+      value_template: >-
+        {% if state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] == 'charge' and state_attr('sensor.rest980', 'batPct') == 100 %}
+          Fully Charged
+        {% else %}
+          {% set mapper =  {
+          'charge' : 'Charging',
+          'run' : 'Cleaning',
+          'evac' : 'Emptying Robot',
+          'stop' : 'Stopped/Paused',
+          'stuck' : 'Stuck',
+          'hmUsrDock' : 'Sent Home',
+          'hmMidMsn' : 'Returning Home mid Clean',
+          'hmPostMsn' : 'Returning Home' } %}
+          {% set state =  state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+        {% endif %}
+        
+      icon_template: mdi:settings
+    vacuum_bin:
+      friendly_name_template: >-
+        {{ states('input_text.vacuum_name') }} Bin Status
+      value_template: >-
+        {% set mapper =  {
+          true : 'Full',
+          false : 'Not Full' } %}
+        {% set state =  state_attr('sensor.rest980', 'bin')["full"] %}
+        {{ mapper[state] if state in mapper else 'Unknown' }}
+      icon_template: mdi:delete
+    vacuum_dock:
+      friendly_name_template: >-
+        {{ states('input_text.vacuum_name') }} Clean Base Status
+      value_template: >-
+        {% set mapper =  {
+          300 : 'Ready',
+          301 : 'Ready',
+          302 : 'Emptying Robot',
+          350 : 'Bag Missing',
+          351 : 'Base Clogged',
+          353 : 'Bag Full' } %}
+        {% set state =  state_attr('sensor.rest980', 'dock')["state"] %}
+        {{ mapper[state] if state in mapper else 'Unknown' }}
+      icon_template: mdi:home-minus
+    vacuum_location:
+      friendly_name_template: >-
+        {{ states('input_text.vacuum_name') }} Location
+      value_template: >-
+        {% if state_attr('sensor.rest980', 'pose')['theta'] is defined %}
+          ({{ state_attr('sensor.rest980', 'pose')['point']['x'] }}, {{ state_attr('sensor.rest980', 'pose')['point']['y'] }}, {{ state_attr('sensor.rest980', 'pose')['theta'] }})
+        {% else %}
+          Unavailable
+        {% endif %}
+      icon_template: mdi:home-map-marker

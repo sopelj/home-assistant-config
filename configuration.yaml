@@ -63,6 +63,22 @@ map:
 # Enable sun tracking
 sun:
 
+# Roomba commands
+rest_command:
+  vacuum_action:
+    url: >-
+      {{ states('input_text.vacuum_action') }}{{ command }}
+    verify_ssl: false
+    method: 'get'
+    timeout: 20
+  vacuum_clean:
+    url: >-
+      {{ states('input_text.vacuum_action') }}cleanRoom
+    verify_ssl: false
+    method: POST
+    content_type: 'application/json'
+    payload: '{{ payload }}'
+
 updater:
   include_used_components: true
 
@@ -70,8 +86,18 @@ camera:
   - platform: local_file
     file_path: /share/motion/lastsnap.jpg
     name: livingroom_camera
+  - platform: generic
+    still_image_url: localhost:3000/image.php
+    content_type: image/png
+    name: Roomba
 
 
+shell_command:
+  vacuum_clear_log: cp /dev/null {{ states('input_text.vacuum_log') }}
+  vacuum_clear_image: curl -X GET -s -O /dev/null '{{ states("input_text.vacuum_map") }}?clear=true'
+  vacuum_generate_image: curl -X GET -s -O /dev/null '{{ states("input_text.vacuum_map") }}?last=true'
+    
+    
 media_player:
   - platform: mpd
     host: 'localhost:6600'
@@ -121,12 +147,12 @@ google:
   client_secret: !secret google_client_secret
 
 # Link to Roomba
-vacuum:
-  - platform: roomba
-    name: Rotom
-    host: !secret roomba_ip
-    username: !secret roomba_username 
-    password: !secret roomba_password
+#vacuum:
+  #- platform: roomba
+    #name: Rotom
+    #host: !secret roomba_ip
+    #username: !secret roomba_username 
+    #password: !secret roomba_password
 
 # Web notifications
 notify:
@@ -135,6 +161,9 @@ notify:
     vapid_pub_key: !secret vapid_pub_key
     vapid_prv_key: !secret vapid_prv_key
     vapid_email: !secret email
+  - name: VacuumFile
+    platform: file
+    filename: /config/vacuum/vacuum.log
 
 # Themes
 frontend:
