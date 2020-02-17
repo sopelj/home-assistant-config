@@ -1,16 +1,8 @@
-#  ____            _       _       
-# / ___|  ___ _ __(_)_ __ | |_ ___ 
-# \___ \ / __| '__| | '_ \| __/ __|
-#  ___) | (__| |  | | |_) | |_\__ \
-# |____/ \___|_|  |_| .__/ \__|___/
-#                 |_|           
-
-# Update Leaf status and notify
 update_leaf:
   alias: Update leaf
   sequence:
   - data:
-      vin: !secret leaf_vin 
+      vin: !secret leaf_vin
     service: nissan_leaf.update
   - data:
       message: Started updating Charjabug
@@ -19,9 +11,22 @@ update_leaf:
       message: Started updating Charjabug
     service: notify.mobile_app_jesse_s_pixel_3
 
-# Service to start Roomba
-start_roomba:
-  alias: Start Roomba
+morning_sunrise:
+  alias: Morning Sunrise
   sequence:
-  - service: vacuum.start
-  
+      - service: light.turn_on
+        entity_id: light.bedroom_light
+        data:
+          brightness_pct: 1
+          kelvin: 2700
+      - service: light.turn_on
+        entity_id: light.bedroom_light
+        data:
+          transition: 60
+          brightness_pct: 100
+          kelvin: 2700
+      - delay:
+        minutes: 30
+      - service: light.turn_off
+        entity_id: light.bedroom_light
+      

@@ -10,3 +10,4 @@ logs:
   homeassistant.components.nissan_leaf: debug
   homeassistant.components.sensor.nissan_leaf: debug
   homeassistant.components.switch.nissan_leaf: debug
+  pycarwings2: debug

@@ -17,7 +17,7 @@ sensor:
       - cleanMissionStatus
       - dock
       - pose
-    resource: http://localhost:3000/api/local/info/state
+    resource: 'http://localhost:3000/api/local/info/state'
     value_template: 'OK'
     scan_interval: 10
   - platform: template
@@ -104,13 +104,13 @@ sensor:
 rest_command:
   vacuum_action:
     url: >-
-      {{ states('input_text.vacuum_action') }}{{ command }}
+      http://localhost:3000/api/local/action/{{ command }}
     verify_ssl: false
     method: 'get'
     timeout: 20
   vacuum_clean:
     url: >-
-      {{ states('input_text.vacuum_action') }}cleanRoom
+      http://localhost:3000/api/local/action/cleanRoom
     verify_ssl: false
     method: POST
     content_type: 'application/json'
@@ -220,7 +220,7 @@ notify:
 
 camera:
   - platform: generic
-    still_image_url: 'http://localhost:3000/image.php'
+    still_image_url: 'http://localhost:3001/image.php'
     content_type: image/png
     name: Roomba
 

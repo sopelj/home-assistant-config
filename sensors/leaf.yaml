@@ -1,0 +1,48 @@
+- platform: template
+  sensors:
+    leaf_next_update:
+      friendly_name: 'Leaf Next Update'
+      value_template: >
+        {%- macro suffix(d) %}
+        {%- set sfx = {1:'st',2:'nd',3:'rd'} %}
+        {{- 'th' if 11 <= d <= 13 else sfx.get(d%10, 'th') }}
+        {%- endmacro %}
+        {% set day = as_timestamp(states.sensor.chargabug_charge.attributes.next_update) | timestamp_custom('%a') %}
+        {% set date = as_timestamp(states.sensor.chargabug_charge.attributes.next_update) | timestamp_custom('%d') |int %}
+        {% set time = as_timestamp(states.sensor.chargabug_charge.attributes.next_update) | timestamp_custom('%I:%M %p') %}
+        {{ day }} {{ date }}{{ suffix(date) }} {{ time }}
+
+- platform: template
+  sensors:
+    leaf_last_attempt:
+      friendly_name: 'Leaf Previous Attempt'
+      value_template: >
+        {%- macro suffix(d) %}
+        {%- set sfx = {1:'st',2:'nd',3:'rd'} %}
+        {{- 'th' if 11 <= d <= 13 else sfx.get(d%10, 'th') }}
+        {%- endmacro %}
+        {% set day = as_timestamp(states.sensor.chargabug_charge.attributes.last_attempt) | timestamp_custom('%a') %}
+        {% set date = as_timestamp(states.sensor.chargabug_charge.attributes.last_attempt) | timestamp_custom('%d') |int %}
+        {% set time = as_timestamp(states.sensor.chargabug_charge.attributes.last_attempt) | timestamp_custom('%I:%M %p') %}
+        {{ day }} {{ date }}{{ suffix(date) }} {{ time }}
+
+- platform: template
+  sensors:
+    leaf_last_update:
+      friendly_name: 'Leaf Last Update'
+      value_template: >
+        {%- macro suffix(d) %}
+        {%- set sfx = {1:'st',2:'nd',3:'rd'} %}
+        {{- 'th' if 11 <= d <= 13 else sfx.get(d%10, 'th') }}
+        {%- endmacro %}
+        {% set day = as_timestamp(states.sensor.chargabug_charge.attributes.updated_on) | timestamp_custom('%a') %}
+        {% set date = as_timestamp(states.sensor.chargabug_charge.attributes.updated_on) | timestamp_custom('%d') |int %}
+        {% set time = as_timestamp(states.sensor.chargabug_charge.attributes.updated_on) | timestamp_custom('%I:%M %p') %}
+        {{ day }} {{ date }}{{ suffix(date) }} {{ time }}
+
+- platform: template
+  sensors:
+    leaf_updating:
+      friendly_name: 'Leaf Update Status'
+      value_template: "{{ states.sensor.chargabug_charge.attributes.update_in_progress }}"
+  

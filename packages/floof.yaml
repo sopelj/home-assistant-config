@@ -13,7 +13,7 @@ cover:
     state_closed: "closed"
     retain: true
 
-light:
+switch:
   # Floof's Bedroom Light
   - platform: mqtt
     name: "Floof's Light"

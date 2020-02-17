@@ -1,0 +1,19 @@
+- platform: google_geocode
+  name: jesse_geocode
+  origin: device_tracker.pixel_3
+  options: street_number, street, city
+  # display_zone: hide
+  gravatar: jesse.sopel@gmail.com
+  # api_key: XXXX_XXXXX_XXXXX
+  language: en-CA
+  region: CA
+
+- platform: google_geocode
+  name: fred_geocode
+  origin: device_tracker.pixel_2
+  options: street_number, street, city
+  # display_zone: hide
+  # gravatar: fredsav52@hotmail.com
+  # api_key: XXXX_XXXXX_XXXXX
+  language: en-CA
+  region: CA

@@ -12,6 +12,8 @@
     event: start
   action:
     service: google_assistant.request_sync
+#    data:
+#      agent_user_id: 
 
 - alias: Log Level
   initial_state: false
@@ -52,3 +54,4 @@
     service: frontend.set_theme
     data:
       name: ios-dark-mode
+

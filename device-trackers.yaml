@@ -12,3 +12,7 @@
   scan_options: " --interface=eth0 192.168.2.0/24 -g"
   exclude:
     - !secret hass_ip
+
+#- platform: nissan_leaf
+#  new_device_defaults:
+#    track_new_devices: true

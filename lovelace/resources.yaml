@@ -24,11 +24,11 @@
 # https://github.com/amaximus/garbage-collection-card
 - url: /community_plugin/garbage-collection-card/garbage-collection-card.js
   type: module
-  
-# https://github.com/benct/lovelace-xiaomi-vacuum-card
-- url: /community_plugin/lovelace-xiaomi-vacuum-card/xiaomi-vacuum-card.js
-  type: module
-  
+
+#
+- type: module
+  url: /community_plugin/lovelace-roomba-vacuum-card/roomba-vacuum-card.js
+
 # https://github.com/custom-cards/vertical-stack-in-card
 - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
   type: js
@@ -39,6 +39,10 @@
 
 # https://github.com/kalkih/mini-graph-card
 - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
+  type: module
+
+# https://github.com/thomasloven/lovelace-gui-sandbox
+- url: /community_plugin/lovelace-gui-sandbox/gui-sandbox.js
   type: module
 
   
@@ -66,7 +70,10 @@
 # https://github.com/custom-cards/flex-table-card
 
 # https://github.com/thomasloven/lovelace-card-mod
-- url: /community_plugin/lovelace-card-mod/card-mod.js
+# - url: /community_plugin/lovelace-card-mod/card-mod.js
+#   type: module
+  
+- url: /community_plugin/lovelace-slider-entity-row/slider-entity-row.js
   type: module
   
 # https://github.com/thomasloven/lovelace-auto-entities

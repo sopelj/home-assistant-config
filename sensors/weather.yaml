@@ -20,8 +20,6 @@
     - temperature
     - temperature_high
     - temperature_low
-    - temperature_min
-    - temperature_max
     - apparent_temperature
     - apparent_temperature_high
     - humidity
