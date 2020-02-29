@@ -50,13 +50,22 @@ views:
                 entities:
                   - sensor.warnings
                   - sensor.watches
+                  - sensor.advisories
+                  - sensor.endings
                 content: |
-                  {{states.sensor.warnings }}
-
-          
-          - type: custom:home-feed-card
-            show_empty: false
-            show_notification_title: true
+                  {% for sensor_name in ('watches', 'advisories', 'warnings', 'endings') %}
+                    {% set sensor = 'sensor.' + sensor_name %}
+                    {% if state_attr(sensor, 'alert date') %}
+                    <div>
+                      {{ state_attr(sensor, 'friendly_name') }}
+                      <ul>
+                        {% for detail in state_attr(sensor, 'alert detail').split('|') %}
+                          <li>{{ detail }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    {% endif %}
+                  {% endfor %}
             
           # Garbage
           - type: custom:garbage-collection-card
@@ -171,12 +180,12 @@ views:
               show_state: false
               name: Battery
               entities:
+                - icon: mdi:play
+                  action:
+                    script: script.start_roomba
                 - attribute: batPct
                   name: Battery
                   unit: '%'
-                - icon: mdi:play
-                  action:
-                    script: script.1582319163683
             - type: custom:multiple-entity-row
               entity: sensor.rest980
               name: Info
@@ -184,14 +193,15 @@ views:
               entities:
                 - sensor.vacuum_phase
                 - sensor.vacuum_cycle
+          - type: conditional
             conditions:
               - entity: sensor.vacuum_dock
                 state_not: 'Ready'
             card:
-              - type: picture-glance
-                aspect_ratio: 0%
-                camera_image: camera.roomba
-                entities: []
+              type: picture-glance
+              aspect_ratio: 0%
+              camera_image: camera.roomba
+              entities: []
               
   - title: Info
     id: info

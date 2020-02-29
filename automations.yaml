@@ -44,3 +44,27 @@
       at: '1:00:00'
   action:
     service: shell_command.cleanup_motion_images
+    
+    
+- alias: "Turn on Bob's light"
+  trigger:
+    - platform: time
+      at: '7:00:00'
+  action:
+    service: switch.turn_on
+    data:
+      entity_id: switch.plant_light
+      
+    
+- alias: "Turn off lights"
+  trigger:
+    - platform: time
+      at: '11:00:00'
+  action:
+    - service: switch.turn_off
+      data:
+        entity_id: switch.plant_light
+    - service: switch.turn_off
+      data:
+        entity_id: switch.smart_outdoor_plug
+        

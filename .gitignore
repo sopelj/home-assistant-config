@@ -10,6 +10,7 @@ google-service-account.json
 
 *.log
 *.db
+*.db*
 appdaemon/compiled/*
 
 html5_push_registrations.conf
