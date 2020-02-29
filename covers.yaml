@@ -4,3 +4,12 @@
 # | |__| (_) \ V /  __/ |  \__ \
 #  \____\___/ \_/ \___|_|  |___/
 
+
+- platform: monroe_diy
+  covers:
+    bedroom_curtain:
+      friendly_name: "Bedroom Curtains"
+      ip_address: "192.168.2.108"
+      full_open_count: 3
+      open_direction: "left"
+      close_direction: "right"

@@ -4,8 +4,9 @@
 # |  _| | | (_) | (_) |  _|  ___) | |_| |_| |  _|  _|
 # |_|   |_|\___/ \___/|_|   |____/ \__|\__,_|_| |_|  
 
+
+# Floof's Door sensor
 cover:
-  # Floof's Door sensor
   - platform: mqtt
     name: "Floof's Door"
     state_topic: "homeassistant/cover/floofs_door/state"
@@ -13,9 +14,56 @@ cover:
     state_closed: "closed"
     retain: true
 
+
+# Floof's Bedroom Light
 switch:
-  # Floof's Bedroom Light
   - platform: mqtt
+    icon: mdi:dog
     name: "Floof's Light"
     command_topic: "homeassistant/switch/floofs_light/set"
     state_topic: "homeassistant/switch/floofs_light/state"
+    retain: true
+
+
+# Watch for new images
+folder_watcher:
+  - folder: /share/motion/images
+    patterns:
+      - '*-capture.jpg'
+
+# Floof cam
+camera: 
+  - platform: local_file
+    file_path: /share/motion/images/lastsnap.jpg
+    name: floof_cam
+    
+
+#Send notification for new image
+script:
+  floof_motion:
+    alias : Floof Motion Notify
+    sequence:
+      - service: notify.mobile_app_jesse_s_pixel_3
+        data:
+          title: New Image
+      - delay: "00:05:00"
+
+automation:
+  alias: Floof Movement
+  trigger:
+    platform: event
+    event_type: folder_watcher
+    event_data:
+      event_type: created
+  condition:
+    condition: state
+    entity_id: script.floof_motion
+    state: 'off'
+  action:
+    service: script.floof_motion
+    #service: notify.mobile_app_jesse_s_pixel_3
+    #data_template:
+    #  title: New image captured!
+    #  message: "Floof moved {{ trigger.event.data.file }}"
+    #  data:
+    #     file: "{{ trigger.event.data.path }}"

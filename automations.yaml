@@ -12,8 +12,8 @@
     event: start
   action:
     service: google_assistant.request_sync
-#    data:
-#      agent_user_id: 
+    data:
+      agent_user_id: !secret google_agent_id
 
 - alias: Log Level
   initial_state: false
@@ -36,22 +36,11 @@
     data:
       message: "New version {{ states.updater.updater.state }} of Home Assistant is available."
 
-# Change Hass theme based on time of day
-- alias: 'Set light theme for the day'
+
+# Delete old Images from Motion
+- alias: 'Cleanup Motion Images'
   trigger:
     - platform: time
-      at: '8:00:00'
+      at: '1:00:00'
   action:
-    service: frontend.set_theme
-    data:
-      name: ios-light-mode
-
-- alias: 'Set dark theme for the night'
-  trigger:
-    - platform: time
-      at: '21:00:00'
-  action:
-    service: frontend.set_theme
-    data:
-      name: ios-dark-mode
-
+    service: shell_command.cleanup_motion_images

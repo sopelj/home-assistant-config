@@ -1,19 +1,21 @@
 - platform: google_geocode
   name: jesse_geocode
+  #friendly_name: Jesse
   origin: device_tracker.pixel_3
   options: street_number, street, city
   # display_zone: hide
   gravatar: jesse.sopel@gmail.com
-  # api_key: XXXX_XXXXX_XXXXX
+  api_key: !secret google_maps_api_key 
   language: en-CA
   region: CA
 
 - platform: google_geocode
   name: fred_geocode
+  #friendly_name: Fred
   origin: device_tracker.pixel_2
   options: street_number, street, city
   # display_zone: hide
-  # gravatar: fredsav52@hotmail.com
-  # api_key: XXXX_XXXXX_XXXXX
+  gravatar: fredsav52@hotmail.com
+  api_key: !secret google_maps_api_key
   language: en-CA
   region: CA

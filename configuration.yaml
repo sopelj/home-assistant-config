@@ -45,38 +45,36 @@ google_assistant:
   service_account: !include google-service-account.json
   report_state: true
 
-# Add environment canada
-weather:
-  - platform: environment_canada
-    latitude: !secret home_latitude
-    longitude: !secret home_longitude
-    forecast: 'hourly'
-    name: environment_canada_home
-
 # Enables System Health
 system_health:
+
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
+
 # Enables support for tracking state changes over time.
 history:
+
 # Add Configuration Panel
 config:
+
 # Enable link to map
 map:
 # Enable sun tracking
 sun:
 
+# Enable ffmpeg
+ffmpeg:
+
+# Browser mod
+browser_mod:
+  prefix: "browser_"
+
 updater:
   include_used_components: true
-
-camera:
- - platform: local_file
-   file_path: /share/motion/images/lastsnap.jpg
-   name: floof_cam
     
 media_player:
   - platform: mpd
-    host: 'localhost:6600'
+    host: !secret hass_ip
 
 # https://fontawesome.com/icons?d=gallery&m=free
 # Enable fontawesome icons
@@ -142,6 +140,10 @@ notify:
 # Themes
 frontend:
   themes: !include_dir_merge_named themes
+
+# Shell commands
+shell_command:
+  cleanup_motion_images: "rm $(ls -td /share/motion/images/*.jpg | awk 'NR>5')"
 
 # Includes
 automation: !include automations.yaml

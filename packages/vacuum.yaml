@@ -23,15 +23,13 @@ sensor:
   - platform: template
     sensors:
       vacuum_battery:
-        friendly_name_template: >-
-          {{ states('input_text.vacuum_name') }} Battery
+        friendly_name: Rotom Battery
         value_template: >-
           {{ state_attr('sensor.rest980', 'batPct') }}
         unit_of_measurement: '%'
         device_class: battery
       vacuum_cycle:
-        friendly_name_template: >-
-          {{ states('input_text.vacuum_name') }} Cycle
+        friendly_name: Rotom Cycle
         value_template: >-
           {% set mapper =  {
             'clean' : 'Cleaning',
@@ -42,8 +40,7 @@ sensor:
           {{ mapper[state] if state in mapper else 'Unknown' }}
         icon_template: mdi:broom
       vacuum_phase:
-        friendly_name_template: >-
-          {{ states('input_text.vacuum_name') }} Status
+        friendly_name: Rotom Status
         value_template: >-
           {% if state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] == 'charge' and state_attr('sensor.rest980', 'batPct') == 100 %}
             Fully Charged
@@ -63,8 +60,7 @@ sensor:
           
         icon_template: mdi:settings
       vacuum_bin:
-        friendly_name_template: >-
-          {{ states('input_text.vacuum_name') }} Bin Status
+        friendly_name: Rotom Bin Status
         value_template: >-
           {% set mapper =  {
             true : 'Full',
@@ -72,23 +68,8 @@ sensor:
           {% set state =  state_attr('sensor.rest980', 'bin')["full"] %}
           {{ mapper[state] if state in mapper else 'Unknown' }}
         icon_template: mdi:delete
-      vacuum_dock:
-        friendly_name_template: >-
-          {{ states('input_text.vacuum_name') }} Clean Base Status
-        value_template: >-
-          {% set mapper =  {
-            300 : 'Ready',
-            301 : 'Ready',
-            302 : 'Emptying Robot',
-            350 : 'Bag Missing',
-            351 : 'Base Clogged',
-            353 : 'Bag Full' } %}
-          {% set state =  state_attr('sensor.rest980', 'dock')["state"] %}
-          {{ mapper[state] if state in mapper else 'Unknown' }}
-        icon_template: mdi:home-minus
       vacuum_location:
-        friendly_name_template: >-
-          {{ states('input_text.vacuum_name') }} Location
+        friendly_name: Rotom Location
         value_template: >-
           {% if state_attr('sensor.rest980', 'pose')['theta'] is defined %}
             ({{ state_attr('sensor.rest980', 'pose')['point']['x'] }}, {{ state_attr('sensor.rest980', 'pose')['point']['y'] }}, {{ state_attr('sensor.rest980', 'pose')['theta'] }})
@@ -123,6 +104,7 @@ rest_command:
 automation:
   # Update Vacuum REST Sensor for Location Details
   - alias: Vacuum Update Location
+    id: vacuum_update_location
     initial_state: true
     trigger:
       - platform: time_pattern
@@ -142,6 +124,7 @@ automation:
   
   # Log Vacuum Location to File
   - alias: Vacuum Log Position
+    id: vacuum_log_position
     initial_state: true
     trigger:
         platform: state
@@ -157,6 +140,7 @@ automation:
                
   # Initialize Blank Vacuum Log File
   - alias: Vacuum Clean Log
+    id: vacuum_clean_log
     initial_state: true
     trigger:
       platform: state
@@ -169,6 +153,7 @@ automation:
           
   # Update Vacuum Log File with Finished Status
   - alias: Vacuum Notify on Finished Cleaning
+    id: vacuum_notify_on_finished_cleaning
     initial_state: true
     trigger:
       platform: state
@@ -182,6 +167,7 @@ automation:
 
   # Update Vacuum Log File with Stuck Status
   - alias: Vacuum Notify on Stuck Status
+    id: vacuum_notify_on_stuck_status
     initial_state: true
     trigger:
       platform: state
@@ -194,6 +180,7 @@ automation:
 
   # Generate Complete Vacuum Map
   - alias: Vacuum Generate Image after Cleaning
+    id: vacuum_generate_image_after_cleaning
     initial_state: true
     trigger:
       platform: state
@@ -224,23 +211,23 @@ camera:
     content_type: image/png
     name: Roomba
 
-
-###################################
-# Scripts
-###################################
-
-script:
-  generate_image_script:
-    sequence:
-      - service: shell_command.vacuum_generate_image
-        data_template:
-          ha_token: !secret appdaemon_token
     
 ###################################
 # Shell Command
 ###################################
 
 shell_command:
-  vacuum_clear_log: cp /dev/null {{ states('input_text.vacuum_log') }}
-  vacuum_clear_image: curl -X GET -s -O /dev/null '{{ states("input_text.vacuum_map") }}?clear=true'
-  vacuum_generate_image: curl -X GET -s -O /dev/null '{{ states("input_text.vacuum_map") }}?last=true'
+  vacuum_clear_log: cp /dev/null /config/vacuum/vacuum.log
+  vacuum_clear_image: curl -X GET -s -O /dev/null 'http://localhost:3001/image.php?clear=true'
+  vacuum_generate_image: curl -X GET -s -O /dev/null 'http://localhost:3001/image.php?last=true'
+
+
+###################################
+# Scripts
+###################################
+
+script:
+  start_roomba:
+    alias: Start Roomba
+    sequence:
+      - service: rest_command.vacuum_clean

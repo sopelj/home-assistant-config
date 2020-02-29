@@ -1,0 +1,13 @@
+# Add environment canada
+weather:
+  - platform: environment_canada
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+    forecast: 'hourly'
+    name: environment_canada_home
+
+sensor:
+  - platform: environment_canada
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+  

@@ -7,18 +7,19 @@ input_datetime:
 input_boolean: 
   alarmstatus:
     name: Wake Me Up
-    initial: off
+    initial: on
     icon: mdi:alarm-check
+    
   alarmweekday:
     name: Weekdays Only
-    initial: off
+    initial: on
     icon: mdi:calendar
 
 automation:
   - alias: 'Wake Me Up'
     trigger:
       platform: template
-      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.alarm_time', 'timestamp') | int | timestamp_custom('%H:%M', True)) }}"
+      value_template: "{{ states('sensor.time') == (states.input_datetime.alarm_time.attributes['timestamp'] - 900) | timestamp_custom('%H:%M', false) }}"
     condition:
       condition: or
       conditions:
@@ -46,6 +47,6 @@ automation:
               entity_id: input_boolean.alarmweekday
               state: 'off'
     action:
-      service: notify.notify
-      data:
-        message: 'Good morning. Time to Wake Up!'
+      - service: script.turn_on
+        data:
+          entity_id: script.morning_sunrise
