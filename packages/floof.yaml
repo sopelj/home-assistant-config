@@ -42,13 +42,20 @@ camera:
 script:
   floof_motion:
     alias : Floof Motion Notify
+    fields:
+      file_path:
+        description: 'File path'
+        example: '/local/images/image.jpg'
+      message:
+        description: 'The message content'
+        example: 'Floof moved!'
     sequence:
-      - service: notify.mobile_app_jesse_s_pixel_3
-        data:
+      - service: notify.notify
+        data_template:
           title: New image captured!
-          message: "Floof moved {{ trigger.event.data.file }}"
+          message: "{{ message }}"
           data:
-             file: "{{ trigger.event.data.path }}"
+             file: "{{ file_path }}"
       - delay: "00:05:00"
 
 # Detect new images
@@ -65,3 +72,6 @@ automation:
     state: 'off'
   action:
     service: script.floof_motion
+    data_template:
+      message: "Floof moved {{ trigger.event.data.file }}"
+      file_path: "{{ trigger.event.data.path }}"

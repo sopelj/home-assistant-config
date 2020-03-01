@@ -4,6 +4,7 @@
 #  / ___ \ |_| | || (_) | | | | | | (_| | |_| | (_) | | | \__ \
 # /_/   \_\__,_|\__\___/|_| |_| |_|\__,_|\__|_|\___/|_| |_|___/
 
+
 # Refresh Google Assistant
 - alias: "Refresh Google Assistant"
   hide_entity: true
@@ -15,15 +16,6 @@
     data:
       agent_user_id: !secret google_agent_id
 
-- alias: Log Level
-  initial_state: false
-  trigger:
-    platform: state
-    entity_id: input_select.log_level
-  action:
-    service: logger.set_level
-    data_template:
-      homeassistant.components: "{{ trigger.to_state.state }}"
 
 # Notify me about updates
 - alias: "Home Assistant Update"
