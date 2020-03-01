@@ -7,16 +7,16 @@
 # Turnoff the Plant light and start the TV
 - name: "TV Time"
   entities:
-    switch.plant_light_2: off
+    switch.plant_light: off
     media_player.playstation_4:
       state: on
 
 # Turn off all the lights and the PS4
 - name: "Bedtime"
   entities:
-    switch.plant_light_2: off
-    switch.hallway_light_2: off
-    switch.under_counter_lights_2: off
+    switch.plant_light: off
+    switch.hallway_light: off
+    switch.under_counter_lights: off
     light.bedroom_light: off
     media_player.playstation_4:
       state: off

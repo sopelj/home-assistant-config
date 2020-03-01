@@ -156,5 +156,4 @@ logger: !include logger.yaml
 person: !include people.yaml
 scene: !include scenes.yaml
 script: !include scripts.yaml
-switch: !include switches.yaml
 zone: !include zones.yaml
