@@ -1,0 +1,22 @@
+#  ____            _                 
+# / ___| _   _ ___| |_ ___ _ __ ___  
+# \___ \| | | / __| __/ _ \ '_ ` _ \ 
+#  ___) | |_| \__ \ ||  __/ | | | | |
+# |____/ \__, |___/\__\___|_| |_| |_|
+#        |___/
+
+- type: entities
+  entities:
+    - type: custom:gui-sandbox
+    - type: custom:entity-attributes-card
+      title: Backups
+      heading_name: List
+      heading_state: States
+      filter:
+        include:
+          - key: sensor.snapshot_backup.last_snapshot
+            name: 'Last snapshot'
+          - key: sensor.snapshot_backup.snapshots_in_google_drive
+            name: 'Snapshots in Google Drive'
+          - key: sensor.snapshot_backup.snapshots_in_hassio
+            name: 'Snapshots in Hassio'

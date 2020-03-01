@@ -1,0 +1,43 @@
+#  ____                  _      
+# |  _ \ ___  ___  _ __ | | ___ 
+# | |_) / _ \/ _ \| '_ \| |/ _ \
+# |  __/  __/ (_) | |_) | |  __/
+# |_|   \___|\___/| .__/|_|\___|
+#                 |_|
+
+- type: vertical-stack
+  cards:
+    - type: entities
+      entities:
+        - person.jesse
+        - sensor.pixel_3_battery_level
+        - sensor.pixel_3_wifi_connection
+    - type: entities
+      title: "Jesse's Google Fit"
+      show_header_toggle: false
+      entities:
+        - sensor.jesse_s_google_fit_steps
+        - sensor.jesse_s_google_fit_weight
+        - sensor.jesse_s_google_fit_distance
+        - sensor.jesse_s_google_fit_move_time
+        - sensor.jesse_s_google_fit_calories
+
+- type: vertical-stack
+  cards:
+    - type: entities
+      entities:
+        - person.fred
+        - sensor.pixel_2_battery_level
+        - sensor.pixel_2_wifi_connection
+
+- type: vertical-stack
+  cards:
+    - type: entities
+      entities:
+        - person.floof
+        - switch.floof_s_light
+        - cover.floof_s_door
+    - type: picture-glance
+      title: Floof Cam
+      entities: []
+      camera_image: camera.floof_cam

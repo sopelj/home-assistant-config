@@ -1,0 +1,169 @@
+#  _   _                      
+# | | | | ___  _ __ ___   ___ 
+# | |_| |/ _ \| '_ ` _ \ / _ \
+# |  _  | (_) | | | | | |  __/
+# |_| |_|\___/|_| |_| |_|\___|
+
+- type: vertical-stack
+  cards:
+    - type: custom:vertical-stack-in-card
+      cards:
+        # Weather Card
+        - type: custom:weather-card
+          entity: weather.environment_canada_home
+        - type: custom:html-template-card
+          ignore_line_breaks: true
+          entities:
+            - sensor.warnings
+            - sensor.watches
+            - sensor.advisories
+            - sensor.endings
+          content: |
+            {% for sensor_name in ('watches', 'advisories', 'warnings', 'endings') %}
+              {% set sensor = 'sensor.' + sensor_name %}
+              {% if state_attr(sensor, 'alert date') %}
+              <div>
+                  {{ state_attr(sensor, 'friendly_name') }}
+                  <ul>
+                  {% for detail in state_attr(sensor, 'alert detail').split('|') %}
+                      <li>{{ detail }}</li>
+                  {% endfor %}
+                  </ul>
+              </div>
+              {% endif %}
+            {% endfor %}
+      
+      # Garbage
+      - type: custom:garbage-collection-card
+        entity: sensor.garbage
+        icon_color: grey
+        hide_date: true
+        hide_before: 3
+      
+      # Recycling
+      - type: custom:garbage-collection-card
+        entity: sensor.recycling
+        icon_color: green
+        hide_date: truef
+        hide_before: 3
+      
+      - type: entities
+        entities:
+          - type: custom:multiple-entity-row
+            name: Alarm
+            entity: input_datetime.alarm_time
+            show_state: false
+            entities:
+              - input_datetime.alarm_time
+              - entity: input_boolean.alarmstatus
+                toggle: true
+              - entity: input_boolean.alarmweekday
+                toggle: true
+      
+      - type: entities
+        entities:
+          - cover.bedroom_curtains
+      
+      # Car info
+    - type: custom:vertical-stack-in-card
+      icon: mdi:car-battery
+      cards:
+        - type: entities
+          title: Chargabug
+          show_header_toggle: false
+          style: |
+            .card-header {
+                padding-bottom: 6rem;
+                background: url(/local/images/leaf.png) no-repeat center 1rem;
+                background-size: contain;
+            }
+          entities:
+            - type: custom:multiple-entity-row
+              name: Battery
+              entity: binary_sensor.chargabug_charging_status
+              show_state: false
+              icon: mdi:battery
+              entities:
+                - entity: sensor.chargabug_charge
+                  name: false
+                  unit: '%'
+                - entity: binary_sensor.chargabug_plug_status
+                  icon: true
+                - entity: binary_sensor.chargabug_charging_status
+                  icon: true
+        - type: custom:multiple-entity-row
+          name: Range
+          entity: sensor.chargabug_range
+          show_state: false
+          entities:
+            - entity: sensor.chargabug_range_ac
+              name: With AC
+            - entity: sensor.chargabug_range
+              name: Without AC
+          - type: custom:multiple-entity-row
+            name: Updated
+            entity: sensor.leaf_last_update
+            show_state: false
+            icon: mdi:calendar
+            entities:
+              - entity: sensor.leaf_last_update
+                name: Last Uptated
+              - entity: sensor.leaf_last_attempt
+                name: Last Attempt
+          - type: custom:multiple-entity-row
+            name: Updating
+            entity: sensor.leaf_updating
+            show_state: false
+            icon: mdi:calendar
+            entities:
+              - name: Update Now
+                icon: mdi:refresh
+                tap_action:
+                action: call-service
+                  service: nissan_leaf.update
+                  service_data: 
+                    vin: !secret leaf_vin
+              - entity: sensor.leaf_updating
+                name: Updating
+              - entity: sensor.leaf_next_update
+                name: Next Attempt
+
+- type: vertical-stack
+  cards:
+    - type: entities
+      title: Rotom
+      show_header_toggle: false
+      style: |
+        .card-header {
+          padding-bottom: 6rem;
+          background: url(/local/images/roomba.png) no-repeat center center;
+          background-size: contain;
+        }
+      entities:
+        - type: custom:multiple-entity-row
+          entity: sensor.rest980
+          show_state: false
+          name: Battery
+          entities:
+            - icon: mdi:play
+              action:
+              script: script.start_roomba
+            - attribute: batPct
+              name: Battery
+              unit: '%'
+      - type: custom:multiple-entity-row
+        entity: sensor.rest980
+        name: Info
+        show_state: false
+        entities:
+          - sensor.vacuum_phase
+          - sensor.vacuum_cycle
+    - type: conditional
+      conditions:
+        - entity: sensor.vacuum_dock
+          state_not: 'Ready'
+      card:
+        type: picture-glance
+        aspect_ratio: 0%
+        camera_image: camera.roomba
+        entities: []

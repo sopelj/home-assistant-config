@@ -1,0 +1,45 @@
+#  ___        __       
+# |_ _|_ __  / _| ___  
+#  | || '_ \| |_ / _ \ 
+#  | || | | |  _| (_) |
+# |___|_| |_|_|  \___/ 
+
+- type: custom:calendar-card
+  title: "Calendar"
+  progressBar: true
+  entities:
+    - calendar.jesse_calendar
+    - calendar.fred_calendar
+    - calendar.work_calendar
+
+- type: custom:auto-entities
+  show_empty: false
+  card:
+    type: entities
+    title: Tracking
+    show_header_toggle: false
+  filter:
+    include:
+      - entity_id: 'sensor.*track_package_*'
+        options:
+          secondary_info: last-changed
+                
+- type: custom:vertical-stack-in-card
+  title: Bob
+  cards:
+    - type: custom:miflora-card
+      image: images/pineapple.jpg
+      min_moisture: 15
+      max_moisture: 60
+      min_conductivity: 350
+      min_temperature: 12
+      entities:
+        - moisture:sensor.pineapple_sensor_moisture
+        - intensity:sensor.pineapple_sensor_light_intensity
+        - temperature:sensor.pineapple_sensor_temperature
+        - conductivity:sensor.pineapple_sensor_conductivity
+        - battery:sensor.pineapple_sensor_battery
+    - type: entity-button
+      entity: switch.plant_light
+      icon: mdi:fruit-pineapple
+      icon_height: 50px
