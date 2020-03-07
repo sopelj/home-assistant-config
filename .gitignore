@@ -22,6 +22,8 @@ themes/
 custom_components/
 www/community
 
+esphome/*/
+
 # Ignore folders.
 .storage
 .cloud

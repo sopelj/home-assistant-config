@@ -1,0 +1,80 @@
+esphome:
+  name: floof_esp
+  platform: ESP8266
+  board: esp01_1m
+
+  on_boot:
+    priority: -10
+    then:
+      if:
+        condition:
+          binary_sensor.is_on: floof_door
+        then:
+          - switch.turn_on: floof_light
+          - output.turn_on: green_led
+        else:
+          - switch.turn_off: floof_light
+          - output.turn_on: red_led
+
+
+wifi:
+  ssid: !secret home_wifi_ssid
+  password: !secret home_wifi_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+output:
+  - platform: gpio
+    pin: GPIO16
+    id: red_led
+    
+  - platform: gpio
+    pin: GPIO5
+    id: green_led
+
+switch:
+  - platform: gpio
+    pin: GPIO14
+    id: floof_light
+    name: "Floof Light"
+    
+    on_turn_on:
+      - output.turn_on: green_led
+      - output.turn_off: red_led
+  
+    on_turn_off:
+      - output.turn_off: green_led
+      - output.turn_on: red_led
+
+
+binary_sensor:
+  - platform: gpio
+    id: floof_door
+    name: "Door"
+    pin: 
+      number: GPIO0
+      mode: INPUT_PULLUP
+    on_state:
+      if:
+        condition:
+          binary_sensor.is_on: floof_door
+        then:
+          - switch.turn_on: floof_light
+        else:
+          - switch.turn_off: floof_light
+    
+  - platform: gpio
+    pin: GPIO4
+    id: button
+    name: "Button"
+    on_press:
+      then:
+        - switch.toggle: floof_light
