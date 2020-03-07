@@ -15,64 +15,63 @@
         - - icon: fab:playstation
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "ps"
+              entity_id: media_player.playstation_4
+              command: "ps"
           - icon: fas:arrow-up
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "up"
+              entity_id: media_player.playstation_4
+              command: "up"
           - icon: fas:long-arrow-alt-right
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "option"
+              entity_id: media_player.playstation_4
+              command: "option"
           - icon: fas:long-arrow-alt-right
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "enter"
+              entity_id: media_player.playstation_4
+              command: "enter"
+            
         - - icon: fas:arrow-left
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "left"
+              entity_id: media_player.playstation_4
+              command: "left"
           - icon: fas:arrow-down
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "down"
+              entity_id: media_player.playstation_4
+              command: "down"
           - icon: fas:arrow-right
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "right"
+              entity_id: media_player.playstation_4
+              command: "right"
           - icon: fas:long-arrow-alt-left
             service: ps4.send_command
             service_data:
-            entity_id: media_player.playstation_4
-            command: "back"
-
-    - type: "custom:button-entity-row"
-      buttons:
-        - icon: mdi:netflix
-          name: "Netflix"
-          service: media_player.select_source
-          service_data:
-            entity_id: media_player.playstation_4
-            source: "Netflix"
-        - icon: mdi:brush
-          name: "Crunchyroll"
-          service: media_player.select_source
-          service_data:
-            entity_id: media_player.playstation_4
-            source: "CRUNCHYROLL - WATCH THE LATEST ANIME and DRAMA"
-        - icon: fab:fort-awesome
-          name: "Disney+"
-          service: media_player.select_source
-          service_data:
-            entity_id: media_player.playstation_4
-            source: "Disney+"
+              entity_id: media_player.playstation_4
+              command: "back"
+  
+        - - icon: mdi:netflix
+            name: "Netflix"
+            service: media_player.select_source
+            service_data:
+              entity_id: media_player.playstation_4
+              source: "Netflix"
+          - icon: mdi:brush
+            name: "Crunchyroll"
+            service: media_player.select_source
+            service_data:
+              entity_id: media_player.playstation_4
+              source: "CRUNCHYROLL - WATCH THE LATEST ANIME and DRAMA"
+          - icon: fab:fort-awesome
+            name: "Disney+"
+            service: media_player.select_source
+            service_data:
+              entity_id: media_player.playstation_4
+              source: "Disney+"
 
 - type: vertical-stack
   cards:

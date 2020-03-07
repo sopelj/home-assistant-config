@@ -5,18 +5,36 @@
 # |____/ \__, |___/\__\___|_| |_| |_|
 #        |___/
 
+
+- type: custom:gui-sandbox
+    
+- type: custom:entity-attributes-card
+  title: Backups
+  heading_name: List
+  heading_state: States
+  filter:
+    include:
+      - key: sensor.snapshot_backup.last_snapshot
+        name: 'Last snapshot'
+      - key: sensor.snapshot_backup.snapshots_in_google_drive
+        name: 'Snapshots in Google Drive'
+      - key: sensor.snapshot_backup.snapshots_in_hassio
+        name: 'Snapshots in Hassio'
+
+- type: custom:entity-attributes-card
+  title: Hassio
+  heading_name: List
+  heading_state: State
+  filter:
+    include:
+      - binary_sensor.updater
+      - sensor.latest_version
+
 - type: entities
   entities:
-    - type: custom:gui-sandbox
-    - type: custom:entity-attributes-card
-      title: Backups
-      heading_name: List
-      heading_state: States
-      filter:
-        include:
-          - key: sensor.snapshot_backup.last_snapshot
-            name: 'Last snapshot'
-          - key: sensor.snapshot_backup.snapshots_in_google_drive
-            name: 'Snapshots in Google Drive'
-          - key: sensor.snapshot_backup.snapshots_in_hassio
-            name: 'Snapshots in Hassio'
+    - automation.home_assistant_update
+    - media_player.mpd
+    - sensor.season
+    - sun.sun
+    - sensor.uptime
+    - binary_sensor.workday_sensor

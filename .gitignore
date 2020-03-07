@@ -7,6 +7,7 @@
 google-service-account.json
 .Jesse's Google Fit_google_fit.token
 .monroe_diy_state.json
+.gmusic_authtoken
 
 *.log
 *.db

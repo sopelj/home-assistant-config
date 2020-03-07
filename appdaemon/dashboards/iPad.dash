@@ -52,14 +52,14 @@ weather_summary:
 under_counter_lights:
   title: "Under the counter lights"
   widget_type: switch
-  entity: switch.under_counter_lights_2
+  entity: switch.under_counter_lights
   icon_on: mdi-toaster-oven
   icon_off: mdi-toaster-oven
 
 plant_light:
   title: "Bob's Light"
   widget_type: switch
-  entity: switch.plant_light_2
+  entity: switch.plant_light
   icon_on: mdi-fruit-pineapple
   icon_off: mdi-fruit-pineapple
 

@@ -17,65 +17,96 @@ sensor:
       - cleanMissionStatus
       - dock
       - pose
+      - signal
+      - bbmssn
+      - bbrun
+      - name
     resource: 'http://localhost:3000/api/local/info/state'
     value_template: 'OK'
     scan_interval: 10
   - platform: template
     sensors:
-      vacuum_battery:
-        friendly_name: Rotom Battery
-        value_template: >-
-          {{ state_attr('sensor.rest980', 'batPct') }}
-        unit_of_measurement: '%'
-        device_class: battery
-      vacuum_cycle:
-        friendly_name: Rotom Cycle
+      vacuum:
+        friendly_name_template: >-
+          {{ state_attr('sensor.rest980', 'name') }}
         value_template: >-
           {% set mapper =  {
-            'clean' : 'Cleaning',
-            'evac' : 'Emptying Robot',
-            'dock' : 'Returning Home',
+            'clean' : 'Clean',
+            'quick' : 'Clean',
+            'spot' : 'Spot',
+            'evac' : 'Empty',
+            'dock' : 'Dock',
+            'train' : 'Train',
             'none' : 'Ready' } %}
           {% set state =  state_attr('sensor.rest980', 'cleanMissionStatus')["cycle"] %}
-          {{ mapper[state] if state in mapper else 'Unknown' }}
-        icon_template: mdi:broom
-      vacuum_phase:
-        friendly_name: Rotom Status
-        value_template: >-
-          {% if state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] == 'charge' and state_attr('sensor.rest980', 'batPct') == 100 %}
-            Fully Charged
-          {% else %}
+          {{ mapper[state] if state in mapper else state }}
+        icon_template: mdi:robot-vacuum
+        attribute_templates:
+          battery: >-
+            {{ state_attr('sensor.rest980', 'batPct') }} %
+          phase: >-
+            {% if state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] == 'charge' and state_attr('sensor.rest980', 'batPct') == 100 %}
+              Idle
+            {% elif state_attr('sensor.rest980', 'cleanMissionStatus')["cycle"] == 'none' and state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] == 'stop' %}
+              Stopped
+            {% else %}
             {% set mapper =  {
-            'charge' : 'Charging',
-            'run' : 'Cleaning',
-            'evac' : 'Emptying Robot',
-            'stop' : 'Stopped/Paused',
-            'stuck' : 'Stuck',
-            'hmUsrDock' : 'Sent Home',
-            'hmMidMsn' : 'Returning Home mid Clean',
-            'hmPostMsn' : 'Returning Home' } %}
+              'charge' : 'Charge',
+              'run' : 'Run',
+              'evac' : 'Empty',
+              'stop' : 'Paused',
+              'stuck' : 'Stuck',
+              'hmUsrDock' : 'Sent Home',
+              'hmMidMsn' : 'Mid Dock',
+              'hmPostMsn' : 'Final Dock' } %}
             {% set state =  state_attr('sensor.rest980', 'cleanMissionStatus')["phase"] %}
-            {{ mapper[state] if state in mapper else 'Unknown' }}
-          {% endif %}
-          
-        icon_template: mdi:settings
-      vacuum_bin:
-        friendly_name: Rotom Bin Status
-        value_template: >-
-          {% set mapper =  {
-            true : 'Full',
-            false : 'Not Full' } %}
-          {% set state =  state_attr('sensor.rest980', 'bin')["full"] %}
-          {{ mapper[state] if state in mapper else 'Unknown' }}
-        icon_template: mdi:delete
+            {{ mapper[state] if state in mapper else state }}
+            {% endif %}
+          bin: >-
+            {% set mapper =  {
+              true : 'Full',
+              false : 'Not Full' } %}
+            {% set state =  state_attr('sensor.rest980', 'bin')["full"] %}
+            {{ mapper[state] if state in mapper else state }}
+          clean_base: >-
+            {% set mapper =  {
+              300 : 'Ready',
+              301 : 'Ready',
+              302 : 'Empty',
+              350 : 'Bag Missing',
+              351 : 'Clogged',
+              353 : 'Bag Full' } %}
+            {% set state =  state_attr('sensor.rest980', 'dock')["state"] %}
+            {{ mapper[state] if state in mapper else state }}
+          location: >-
+            {% if state_attr('sensor.rest980', 'pose')['theta'] is defined %}
+              ({{ state_attr('sensor.rest980', 'pose')['point']['x'] }}, {{ state_attr('sensor.rest980', 'pose')['point']['y'] }}, {{ state_attr('sensor.rest980', 'pose')['theta'] }})
+            {% else %}
+              Unavailable
+            {% endif %}
+          rssi: >-
+            {{ state_attr('sensor.rest980', 'signal')['rssi'] }}
+          area_cleaned: >-
+            {{ (state_attr("sensor.rest980", "bbrun")["sqft"] / 10.764 * 100)| round() }} m²
+          job_time: >-
+            {{ state_attr('sensor.rest980', 'bbrun')['hr'] }}h {{ state_attr('sensor.rest980', 'bbrun')['min'] }}m
+          total_jobs: >-
+            {{ state_attr('sensor.rest980', 'bbmssn')['nMssn'] }}
+          dirt_events: >-
+            {{ state_attr('sensor.rest980', 'bbrun')['nScrubs'] }}
+          evac_events: >-
+            {{ state_attr('sensor.rest980', 'bbrun')['nEvacs'] }}  
+          maint_due: >-
+            {% if is_state('input_boolean.vacuum_maint_due', 'on') %}
+              true
+            {% else %}
+              false
+            {% endif %}
       vacuum_location:
-        friendly_name: Rotom Location
+        friendly_name_template: >-
+          {{ state_attr('sensor.rest980', 'name') }} Location
         value_template: >-
-          {% if state_attr('sensor.rest980', 'pose')['theta'] is defined %}
-            ({{ state_attr('sensor.rest980', 'pose')['point']['x'] }}, {{ state_attr('sensor.rest980', 'pose')['point']['y'] }}, {{ state_attr('sensor.rest980', 'pose')['theta'] }})
-          {% else %}
-            Unavailable
-          {% endif %}
+          {{ state_attr('sensor.vacuum', 'location') }}
         icon_template: mdi:home-map-marker
 
 ###################################
@@ -84,18 +115,25 @@ sensor:
 
 rest_command:
   vacuum_action:
-    url: >-
-      http://localhost:3000/api/local/action/{{ command }}
+    url: 'http://localhost:3000/api/local/action/{{ command }}'
     verify_ssl: false
     method: 'get'
     timeout: 20
   vacuum_clean:
-    url: >-
-      http://localhost:3000/api/local/action/cleanRoom
+    url: 'http://localhost:3000/api/local/action/cleanRoom'
     verify_ssl: false
     method: POST
     content_type: 'application/json'
     payload: '{{ payload }}'
+
+###################################
+# Input Boolean
+###################################
+
+input_boolean:
+  vacuum_maint_due:
+    name: Vacuum Maintenance
+    icon: mdi:wrench
 
 ###################################
 # Automation
@@ -104,7 +142,6 @@ rest_command:
 automation:
   # Update Vacuum REST Sensor for Location Details
   - alias: Vacuum Update Location
-    id: vacuum_update_location
     initial_state: true
     trigger:
       - platform: time_pattern
@@ -115,24 +152,33 @@ automation:
           domain: rest_command
           service: vacuum_clean
     condition: 
-      condition: state
-      entity_id: sensor.vacuum_cycle
-      state: 'Cleaning'
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: sensor.vacuum
+          state: 'Clean'
+        - condition: state
+          entity_id: sensor.vacuum
+          state: 'Train'
     action:
       - service: homeassistant.update_entity
         entity_id: sensor.rest980
   
   # Log Vacuum Location to File
   - alias: Vacuum Log Position
-    id: vacuum_log_position
     initial_state: true
     trigger:
         platform: state
         entity_id: sensor.vacuum_location
-    condition:
-      condition: state
-      entity_id: sensor.vacuum_cycle
-      state: 'Cleaning'
+    condition: 
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: sensor.vacuum
+          state: 'Clean'
+        - condition: state
+          entity_id: sensor.vacuum
+          state: 'Train'
     action:
       - service: notify.vacuumfile
         data_template: 
@@ -140,26 +186,32 @@ automation:
                
   # Initialize Blank Vacuum Log File
   - alias: Vacuum Clean Log
-    id: vacuum_clean_log
     initial_state: true
     trigger:
-      platform: state
-      entity_id: sensor.vacuum_cycle
-      from: 'Ready'
-      to: 'Cleaning'
+      - platform: state
+        entity_id: sensor.vacuum
+        from: 'Ready'
+        to: 'Clean'
+      - platform: state
+        entity_id: sensor.vacuum
+        from: 'Ready'
+        to: 'Train'
     action:
       - service: shell_command.vacuum_clear_log
       - service: shell_command.vacuum_clear_image
           
   # Update Vacuum Log File with Finished Status
   - alias: Vacuum Notify on Finished Cleaning
-    id: vacuum_notify_on_finished_cleaning
     initial_state: true
     trigger:
-      platform: state
-      entity_id: sensor.vacuum_cycle
-      from: 'Cleaning'
-      to: 'Ready'
+      - platform: state
+        entity_id: sensor.vacuum
+        from: 'Clean'
+        to: 'Ready'
+      - platform: state
+        entity_id: sensor.vacuum
+        from: 'Train'
+        to: 'Ready'
     action:
       - service: notify.vacuumfile
         data_template: 
@@ -167,12 +219,10 @@ automation:
 
   # Update Vacuum Log File with Stuck Status
   - alias: Vacuum Notify on Stuck Status
-    id: vacuum_notify_on_stuck_status
     initial_state: true
     trigger:
-      platform: state
-      entity_id: sensor.vacuum_phase
-      to: 'Stuck'
+      platform: template
+      value_template: "{{ is_state_attr('sensor.vacuum', 'phase', 'Stuck') }}"
     action:
       - service: notify.vacuumfile
         data_template: 
@@ -180,17 +230,52 @@ automation:
 
   # Generate Complete Vacuum Map
   - alias: Vacuum Generate Image after Cleaning
-    id: vacuum_generate_image_after_cleaning
     initial_state: true
     trigger:
-      platform: state
-      entity_id: sensor.vacuum_cycle
-      from: 'Cleaning'
-      to: 'Ready'
-      for:
-        seconds: 10
+      - platform: state
+        entity_id: sensor.vacuum
+        from: 'Clean'
+        to: 'Ready'
+        for:
+          seconds: 10
+      - platform: state
+        entity_id: sensor.vacuum
+        from: 'Train'
+        to: 'Ready'
+        for:
+          seconds: 10
     action:
       service: shell_command.vacuum_generate_image
+
+  # Maintence Check
+  - alias: Vacuum Maintenance Check
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        minutes: /15
+      - platform: state
+        entity_id: [
+          'sensor.vacuum_maint_clean_brushes',
+          'sensor.vacuum_maint_clean_contacts',
+          'sensor.vacuum_maint_clean_filter',
+          'sensor.vacuum_maint_clean_wheel',
+          'sensor.vacuum_maint_replace_brushes',
+          'sensor.vacuum_maint_replace_filter',
+          'sensor.vacuum_maint_replace_wheel'
+        ]
+    action:
+      - service_template: >-
+          {% set ns = namespace(count = 0) %}
+          {% for item in states.sensor if 'vacuum_maint' in item.entity_id and (state_attr(item.entity_id, 'visibility_timestamp') < as_timestamp(now())) %}
+            {% set ns.count = loop.index %}
+          {% endfor %}
+          {% if ns.count > 0 %}
+            input_boolean.turn_on
+          {% else %}
+            input_boolean.turn_off
+          {% endif %}
+        entity_id: input_boolean.vacuum_maint_due
+
 
 ###################################
 # Notify

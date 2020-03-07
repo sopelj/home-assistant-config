@@ -5,26 +5,6 @@
 # |_|   |_|\___/ \___/|_|   |____/ \__|\__,_|_| |_|  
 
 
-# Floof's Door sensor
-cover:
-  - platform: mqtt
-    name: "Floof's Door"
-    state_topic: "homeassistant/cover/floofs_door/state"
-    state_open: "open"
-    state_closed: "closed"
-    retain: true
-
-
-# Floof's Bedroom Light
-switch:
-  - platform: mqtt
-    icon: mdi:dog
-    name: "Floof's Light"
-    command_topic: "homeassistant/switch/floofs_light/set"
-    state_topic: "homeassistant/switch/floofs_light/state"
-    retain: true
-
-
 # Watch for new images
 folder_watcher:
   - folder: /share/motion/images
@@ -50,7 +30,7 @@ script:
         description: 'The message content'
         example: 'Floof moved!'
     sequence:
-      - service: notify.notify
+      - service: notify.mobile_app_jesse_s_pixel_3
         data_template:
           title: New image captured!
           message: "{{ message }}"

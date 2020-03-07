@@ -6,7 +6,7 @@
 #          |___/
 
 - type: entities
-  title: Lights
+  title: Indoor
   state_color: true
   show_header_toggle: false
   entities:
@@ -32,3 +32,17 @@
         - entity: switch.switch_2
           toggle: true
           name: 'Back'
+
+- type: custom:vertical-stack-in-card
+  cards:
+    - type: custom:light-entity-card
+      entity: light.wled
+      header: Outdoor Lights
+      persist_features: true
+    
+    - type: entities
+      state_color: true
+      entities:
+        - sensor.wled_estimated_current
+        - switch.wled_nightlight
+

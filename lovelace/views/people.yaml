@@ -10,6 +10,7 @@
     - type: entities
       entities:
         - person.jesse
+        - sensor.jesse_s_pixel_3_geocoded_location
         - sensor.pixel_3_battery_level
         - sensor.pixel_3_wifi_connection
     - type: entities
@@ -26,7 +27,8 @@
   cards:
     - type: entities
       entities:
-        - person.fred
+        - person.frederic
+        - sensor.fred_s_pixel_2_geocoded_location
         - sensor.pixel_2_battery_level
         - sensor.pixel_2_wifi_connection
 

@@ -8,9 +8,11 @@ appdaemon:
   plugins:
     HASS:
       type: hass
-      ha_url: "http://192.168.2.91:8123"
-      token: !secret appdaemon_token
 
-hadashboard:
-#  dash_url: "http://192.168.2.91:5050"
+http:
+  url: http://192.168.2.91:5050
   dashboard_dir: /config/appdaemon/dashboards
+  
+hadashboard:
+admin:
+api:

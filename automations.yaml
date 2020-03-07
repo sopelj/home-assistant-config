@@ -51,7 +51,7 @@
 - alias: "Turn off lights"
   trigger:
     - platform: time
-      at: '11:00:00'
+      at: '23:00:00'
   action:
     - service: switch.turn_off
       data:
@@ -60,3 +60,22 @@
       data:
         entity_id: switch.smart_outdoor_plug
         
+
+# Just before sunset turn on the kitchen lights
+- alias: "On sunset"
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "-00:15:00"
+  condition:
+    condition: or
+    conditions:
+      - condition: state
+        entity_id: device_tracker.pixel_2
+        state: home
+      - condition: state
+        entity_id: device_tracker.pixel_3
+        state: home
+  action:
+    service: light.turn_on
+    entity_id: switch.under_counter_lights

@@ -141,6 +141,7 @@ notify:
 frontend:
   themes: !include_dir_merge_named themes
 
+
 # Shell commands
 shell_command:
   cleanup_motion_images: "rm $(ls -td /share/motion/images/*.jpg | awk 'NR>5')"
@@ -150,6 +151,7 @@ automation: !include automations.yaml
 binary_sensor: !include binary-sensors.yaml
 cover: !include covers.yaml
 device_tracker: !include device-trackers.yaml
+light: !include lights.yaml
 garbage_collection: !include garbage-collection.yaml
 group: !include groups.yaml
 logger: !include logger.yaml

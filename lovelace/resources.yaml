@@ -29,8 +29,8 @@
 - url: /community_plugin/Home-Assistant-Lovelace-HTML-Jinja2-Template-card/html-template-card.js
   type: js
 
-- type: module
-  url: /community_plugin/lovelace-roomba-vacuum-card/roomba-vacuum-card.js
+- url: /community_plugin/lovelace-roomba-vacuum-card/roomba-vacuum-card.js
+  type: module
 
 # https://github.com/custom-cards/vertical-stack-in-card
 - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
@@ -48,6 +48,9 @@
 - url: /community_plugin/lovelace-gui-sandbox/gui-sandbox.js
   type: module
 
+# https://github.com/ljmerza/light-entity-card
+- url: /community_plugin/light-entity-card/light-entity-card.js
+  type: js
   
 # https://github.com/thomasloven/lovelace-template-entity-row
 # - url: /community_plugin/lovelace-template-entity-row/template-entity-row.js
